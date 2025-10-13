@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageSection } from "./PageSection";
+import { SplitBadge } from "./SplitBadge";
 
 export function Footer() {
     return (
@@ -7,9 +8,13 @@ export function Footer() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.18),_transparent_60%)]" />
             <PageSection className="relative flex flex-col gap-12 py-20 sm:py-24">
                 <div className="space-y-4 max-w-3xl">
-                    <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white/70">
-                        🔥 Certified Blazingly Fast™
-                    </span>
+                    <SplitBadge
+                        leading="Certified"
+                        trailing="Blazingly Fast™"
+                        color="#ff6b6b"
+                        className="border-white/10"
+                        trailingClassName="bg-white/10 text-white/80"
+                    />
                     <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                         The trust fall of performance claims.
                     </h2>

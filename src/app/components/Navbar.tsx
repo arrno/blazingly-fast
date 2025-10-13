@@ -21,8 +21,8 @@ export function Navbar() {
                     {/* <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-black text-sm font-bold text-white">
                         🔥
                     </span> */}
-                    <span className="text-lg font-bold tracking-tight">
-                        🔥 blazingly.fast
+                    <span className="text-lg font-bold tracking-tight font-mono tracking-[0.2em]">
+                        <span className="pr-1">🔥</span>blazingly.fast
                     </span>
                 </Link>
 

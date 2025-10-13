@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageSection } from "./PageSection";
+import { SplitBadge } from "./SplitBadge";
 
 const steps = [
     {
@@ -28,10 +29,11 @@ export function Hero() {
             <div className="absolute inset-x-0 -top-20 -z-10 h-96 bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.12),_transparent_55%)]" />
             <PageSection className="relative py-24">
                 <div className="mx-auto flex max-w-3xl flex-col items-center gap-10 text-center sm:items-start sm:text-left">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/80 px-4 py-1 text-sm font-medium text-gray-600 shadow-sm backdrop-blur">
-                        <span className="text-base">💠</span>
-                        Certified Blazingly Fast™
-                    </div>
+                    <SplitBadge
+                        leading="Certified"
+                        trailing="Blazingly Fast™"
+                        className="backdrop-blur"
+                    />
 
                     <div className="space-y-6">
                         <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl lg:text-6xl xl:text-7xl">
@@ -50,14 +52,14 @@ export function Hero() {
                     <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
                         <Link
                             href="#submit"
-                            className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-gray-900/10 transition hover:bg-gray-800"
+                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-gray-900/10 transition hover:bg-gray-800"
                         >
                             Submit your repo
                             <span aria-hidden>→</span>
                         </Link>
                         <Link
                             href="#leaderboard"
-                            className="inline-flex items-center justify-center gap-2 rounded-full border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-800 transition hover:border-gray-300"
+                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-800 transition hover:border-gray-300"
                         >
                             Browse the leaderboard
                         </Link>
@@ -80,8 +82,14 @@ export function Hero() {
                                 key={step.title}
                                 className="rounded-lg border border-gray-200 bg-white/70 p-4 text-left shadow-sm backdrop-blur"
                             >
-                                <span className="inline-flex rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
-                                    {step.badge}
+                                <span className="inline-flex items-center gap-2 rounded-full bg-gray-200 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-800">
+                                    <span
+                                        className="h-2.5 w-2.5 rounded-full bg-[#ff6b6b]"
+                                        aria-hidden
+                                    />
+                                    <span className="font-mono tracking-[0.2em]">
+                                        {step.badge}
+                                    </span>
                                 </span>
                                 <h3 className="mt-4 text-sm font-semibold text-gray-900">
                                     {step.title}
