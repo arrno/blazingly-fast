@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PageSection } from "./PageSection";
+import { GetCertifiedButton } from "./GetCertifiedButton";
 
 const navLinks = [
     { label: "How it works", href: "#how-it-works" },
@@ -45,13 +46,12 @@ export function Navbar() {
                     >
                         Leaderboard
                     </Link>
-                    <Link
-                        href="#submit"
+                    <GetCertifiedButton
                         className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
                     >
                         Get certified
                         <span aria-hidden>→</span>
-                    </Link>
+                    </GetCertifiedButton>
                 </div>
             </PageSection>
         </header>

@@ -1,6 +1,7 @@
 import { CertificationSection } from "./components/CertificationSection";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
+import { ModalForm } from "./components/ModalForm";
 import { Navbar } from "./components/Navbar";
 import { WhyProjectsSection } from "./components/WhyProjectsSection";
 
@@ -14,6 +15,7 @@ export default function Home() {
                 <WhyProjectsSection />
             </main>
             <Footer />
+            <ModalForm />
         </div>
     );
 }

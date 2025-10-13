@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PageSection } from "./PageSection";
 import { SplitBadge } from "./SplitBadge";
+import { GetCertifiedButton } from "./GetCertifiedButton";
 
 const steps = [
     {
@@ -50,13 +51,10 @@ export function Hero() {
                     </div>
 
                     <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
-                        <Link
-                            href="#submit"
-                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-gray-900/10 transition hover:bg-gray-800"
-                        >
+                        <GetCertifiedButton className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-gray-900/10 transition hover:bg-gray-800">
                             Submit your repo
                             <span aria-hidden>→</span>
-                        </Link>
+                        </GetCertifiedButton>
                         <Link
                             href="#leaderboard"
                             className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-800 transition hover:border-gray-300"

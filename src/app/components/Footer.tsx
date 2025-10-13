@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { PageSection } from "./PageSection";
 import { SplitBadge } from "./SplitBadge";
+import { GetCertifiedButton } from "./GetCertifiedButton";
 
 export function Footer() {
     return (
@@ -37,13 +37,10 @@ export function Footer() {
                             place in the Hall of Speed.
                         </p>
                     </div>
-                    <Link
-                        href="#submit"
-                        className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/15"
-                    >
+                    <GetCertifiedButton className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/15">
                         Get certified
                         <span aria-hidden>→</span>
-                    </Link>
+                    </GetCertifiedButton>
                 </div>
 
                 <div className="flex flex-col gap-2 text-xs uppercase tracking-[0.25em] text-white/40 sm:flex-row sm:items-center sm:justify-between">
