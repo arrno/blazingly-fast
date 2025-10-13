@@ -34,7 +34,7 @@ export function Hero() {
                     </div>
 
                     <div className="space-y-6">
-                        <h1 className="text-4xl font-semibold tracking-tight text-gray-950 sm:text-5xl lg:text-6xl">
+                        <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl lg:text-6xl xl:text-7xl">
                             The world’s most rigorous self-certification
                             program.
                         </h1>
@@ -78,7 +78,7 @@ export function Hero() {
                         {steps.map((step) => (
                             <div
                                 key={step.title}
-                                className="rounded-2xl border border-gray-200 bg-white/70 p-4 text-left shadow-sm backdrop-blur"
+                                className="rounded-lg border border-gray-200 bg-white/70 p-4 text-left shadow-sm backdrop-blur"
                             >
                                 <span className="inline-flex rounded-full bg-gray-900 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
                                     {step.badge}
