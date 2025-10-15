@@ -170,26 +170,26 @@ export function ProjectTable(): JSX.Element {
                     </tbody>
                 </table>
             </div>
-            <div className="flex items-center justify-end border-t border-gray-100 bg-gray-50 px-6 py-4 text-sm text-gray-600">
-                <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 shadow-sm">
+            <div className="flex items-center justify-end gap-6 border-t border-gray-100 bg-gray-50 px-6 py-3 text-xs text-gray-500">
+                <span className="font-mono uppercase tracking-[0.25em] text-gray-400">
+                    Page 1 of 1
+                </span>
+                <div className="flex items-center gap-4">
                     <button
                         type="button"
-                        className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold text-gray-400 transition"
+                        className="inline-flex items-center gap-1 font-semibold text-gray-400 transition hover:text-gray-600 disabled:cursor-not-allowed disabled:text-gray-300"
                         disabled
                     >
-                        <span aria-hidden className="text-base">←</span>
+                        <span aria-hidden className="text-sm">←</span>
                         Prev
                     </button>
-                    <span className="font-mono text-[0.65rem] uppercase tracking-[0.3em] text-gray-400">
-                        Page 1 of 1
-                    </span>
                     <button
                         type="button"
-                        className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold text-gray-400 transition"
+                        className="inline-flex items-center gap-1 font-semibold text-gray-400 transition hover:text-gray-600 disabled:cursor-not-allowed disabled:text-gray-300"
                         disabled
                     >
                         Next
-                        <span aria-hidden className="text-base">→</span>
+                        <span aria-hidden className="text-sm">→</span>
                     </button>
                 </div>
             </div>
