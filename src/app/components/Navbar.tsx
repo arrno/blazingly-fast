@@ -41,7 +41,7 @@ export function Navbar() {
 
                 <div className="flex items-center gap-2">
                     <Link
-                        href="#leaderboard"
+                        href="/hall-of-speed"
                         className="hidden rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-gray-300 hover:text-gray-900 sm:inline-flex"
                     >
                         Leaderboard

@@ -16,8 +16,13 @@ export default function Home() {
                     className="mx-auto mt-6 block"
                 />
                 <img
-                    src="/not-fast-badge.svg"
-                    alt="Blazingly slow badge"
+                    src="/slow-badge.svg"
+                    alt="Blazingly pending badge"
+                    className="mx-auto mt-2 block"
+                />
+                <img
+                    src="/badge.svg"
+                    alt="Blazingly pending badge"
                     className="mx-auto mt-2 block"
                 />
                 <Hero />
