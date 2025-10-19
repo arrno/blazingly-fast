@@ -21,7 +21,7 @@ export default function Home() {
                     className="mx-auto mt-2 block"
                 />
                 <img
-                    src="/badge.svg"
+                    src="/mid-badge.svg"
                     alt="Blazingly pending badge"
                     className="mx-auto mt-2 block"
                 />

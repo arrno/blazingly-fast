@@ -1,4 +1,5 @@
 import type { JSX } from "react";
+import Link from "next/link";
 
 type ProjectEntry = {
     name: string;
@@ -132,7 +133,11 @@ export function ProjectTable(): JSX.Element {
                                                 —
                                             </span>
                                         ) : (
-                                            project.repo
+                                            <Link
+                                                href={`https://${project.repo}`}
+                                            >
+                                                {project.repo}
+                                            </Link>
                                         )}
                                     </td>
                                     <td className="min-w-[140px] whitespace-nowrap px-6 py-4 text-gray-600">
@@ -180,7 +185,9 @@ export function ProjectTable(): JSX.Element {
                         className="inline-flex items-center gap-1 font-semibold text-gray-400 transition hover:text-gray-600 disabled:cursor-not-allowed disabled:text-gray-300"
                         disabled
                     >
-                        <span aria-hidden className="text-sm">←</span>
+                        <span aria-hidden className="text-sm">
+                            ←
+                        </span>
                         Prev
                     </button>
                     <button
@@ -189,7 +196,9 @@ export function ProjectTable(): JSX.Element {
                         disabled
                     >
                         Next
-                        <span aria-hidden className="text-sm">→</span>
+                        <span aria-hidden className="text-sm">
+                            →
+                        </span>
                     </button>
                 </div>
             </div>
