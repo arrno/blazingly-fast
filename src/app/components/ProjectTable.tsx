@@ -1,122 +1,75 @@
-import type { JSX } from "react";
+"use client";
+
+import { useEffect, type JSX } from "react";
 import Link from "next/link";
-import { Project, Status } from "../domain/projects";
+import {
+    Project,
+    Status,
+} from "../domain/projects";
+import { useCollection } from "../hooks/useCollection";
+import type { QueryDocumentSnapshot } from "firebase/firestore";
 
-const long_blurb =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. precis";
+type FirestoreProject = {
+    name?: string;
+    maintainer?: string;
+    repository?: string;
+    certifiedDate?: { toDate?: () => Date } | Date | string;
+    certifiedOn?: string;
+    blurb?: string;
+    exists?: boolean;
+    status?: Status;
+};
 
-const projectEntries: Project[] = [
-    {
-        id: "0",
-        certifiedDate: new Date(),
-        exists: true,
-        name: "pipevine",
-        maintainer: "Jess K.",
-        repository: "github.com/pipevine/app",
-        certifiedOn: "Apr 11, 2024",
-        blurb: "2x faster builds than last Tuesday",
-        status: Status.Fast,
-    },
-    {
-        id: "0",
-        certifiedDate: new Date(),
-        exists: true,
-        name: "thread.fast",
-        maintainer: "Lance & team",
-        repository: "github.com/threadfast/core",
-        certifiedOn: "Mar 29, 2024",
-        blurb: long_blurb,
-        status: Status.Fast,
-    },
-    {
-        id: "0",
-        certifiedDate: new Date(),
-        exists: true,
-        name: "sidecar turbo",
-        maintainer: "Amrita S.",
-        repository: "github.com/amritas/sidecar-turbo",
-        certifiedOn: "Feb 18, 2024",
-        blurb: "Cold starts in a warm 28ms",
-        status: Status.Average,
-    },
-    {
-        id: "0",
-        certifiedDate: new Date(),
-        exists: true,
-        name: "quantzip",
-        maintainer: "Mina W.",
-        repository: "github.com/minaw/quantzip",
-        certifiedOn: "Mar 07, 2024",
-        blurb: "Compresses before data arrives",
-        status: Status.Fast,
-    },
-    {
-        id: "0",
-        certifiedDate: new Date(),
-        exists: true,
-        name: "cachemancer",
-        maintainer: "Eli + crew",
-        repository: "github.com/eli/cachemancer",
-        certifiedOn: "Feb 02, 2024",
-        blurb: "Caches the caches of your caches",
-        status: Status.Fast,
-    },
-    {
-        id: "0",
-        certifiedDate: new Date(),
-        exists: true,
-        name: "warp chronicle",
-        maintainer: "Val & Arjun",
-        repository: "github.com/valandco/warp-chronicle",
-        certifiedOn: "Dec 08, 2023",
-        blurb: "Scheduling that outruns spacetime",
-        status: Status.Average,
-    },
-    {
-        id: "0",
-        certifiedDate: new Date(),
-        exists: true,
-        name: "async orchard",
-        maintainer: "Devlin H.",
-        repository: "github.com/devlinh/async-orchard",
-        certifiedOn: "Oct 05, 2023",
-        blurb: "Harvests futures in parallel",
-        status: Status.Fast,
-    },
-    {
-        id: "0",
-        certifiedDate: new Date(),
-        exists: true,
-        name: "glidekit",
-        maintainer: "Risa M.",
-        repository: "github.com/risam/glidekit",
-        certifiedOn: "Sep 14, 2023",
-        blurb: "UI that boots before mount",
-        status: Status.Fast,
-    },
-    {
-        id: "0",
-        certifiedDate: new Date(),
-        exists: true,
-        name: "latency lullaby",
-        maintainer: "Small Perf Lab",
-        repository: "github.com/spl/latency-lullaby",
-        certifiedOn: "Aug 22, 2023",
-        blurb: "Puts the p99 right to sleep",
-        status: Status.Average,
-    },
-    {
-        id: "0",
-        certifiedDate: new Date(),
-        exists: true,
-        name: "your project here",
-        maintainer: "You?",
-        repository: "github.com/you/blazingly-fast",
-        certifiedOn: "Pending",
-        blurb: "Awaiting bold claims",
-        status: Status.Fast,
-    },
-];
+const ROW_TARGET = 10;
+
+function formatDateLabel(date: Date): string {
+    return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+    });
+}
+
+function mapProjectDocument(doc: QueryDocumentSnapshot): Project {
+    const data = doc.data() as FirestoreProject;
+
+    const certifiedDateValue = data.certifiedDate;
+    let certifiedDate: Date;
+
+    if (certifiedDateValue instanceof Date) {
+        certifiedDate = certifiedDateValue;
+    } else if (
+        certifiedDateValue &&
+        typeof certifiedDateValue === "object" &&
+        "toDate" in certifiedDateValue &&
+        typeof certifiedDateValue.toDate === "function"
+    ) {
+        certifiedDate = certifiedDateValue.toDate();
+    } else if (typeof certifiedDateValue === "string") {
+        certifiedDate = new Date(certifiedDateValue);
+    } else {
+        certifiedDate = new Date();
+    }
+
+    const status =
+        data.status === Status.Fast ||
+        data.status === Status.Average ||
+        data.status === Status.Pending
+            ? data.status
+            : Status.Pending;
+
+    return {
+        id: doc.id,
+        name: data.name ?? doc.id,
+        maintainer: data.maintainer ?? "",
+        repository: data.repository ?? "",
+        certifiedDate,
+        certifiedOn: data.certifiedOn ?? formatDateLabel(certifiedDate),
+        blurb: data.blurb ?? "",
+        exists: data.exists ?? true,
+        status,
+    };
+}
 
 const STATUS_META: Record<Status, { label: string; className: string }> = {
     fast: {
@@ -131,33 +84,76 @@ const STATUS_META: Record<Status, { label: string; className: string }> = {
         label: "blazingly average",
         className: "text-[#8F7DEB]",
     },
-    // average: {
-    //     label: "blazingly average",
-    //     className: "text-[#28A745]",
-    // },
 };
 
-const ROW_TARGET = 10;
+function padProjects(projects: Project[]): Project[] {
+    if (projects.length >= ROW_TARGET) {
+        return projects;
+    }
 
-const paddedEntries: Project[] = [...projectEntries];
-while (paddedEntries.length < ROW_TARGET) {
-    paddedEntries.push({
-        id: "0",
-        certifiedDate: new Date(),
-        exists: false,
-        name: "",
-        maintainer: "",
-        repository: "",
-        certifiedOn: "",
-        status: Status.Average,
-        blurb: "",
-    });
+    const padded = [...projects];
+    while (padded.length < ROW_TARGET) {
+        padded.push({
+            id: `placeholder-${padded.length}`,
+            certifiedDate: new Date(),
+            exists: false,
+            name: "",
+            maintainer: "",
+            repository: "",
+            certifiedOn: "",
+            status: Status.Pending,
+            blurb: "",
+        });
+    }
+
+    return padded;
+}
+
+function normalizeRepository(repository: string): string {
+    if (!repository) {
+        return "";
+    }
+
+    if (repository.startsWith("http")) {
+        return repository;
+    }
+
+    return `https://${repository}`;
 }
 
 export function ProjectTable(): JSX.Element {
+    const {
+        data,
+        loading,
+        error,
+        page,
+        totalPages,
+        nextPage,
+        prevPage,
+        refresh,
+    } = useCollection<Project>("projects", {
+        mapDocument: mapProjectDocument,
+        orderByField: "certifiedDate",
+        orderDirection: "desc",
+        pageSize: ROW_TARGET,
+    });
+
+    useEffect(() => {
+        const listener = () => refresh();
+        window.addEventListener("project-submitted", listener);
+        return () => window.removeEventListener("project-submitted", listener);
+    }, [refresh]);
+
+    const projects = padProjects(data);
+    const pageLabel = `Page ${Math.min(page + 1, totalPages)} of ${totalPages}`;
+
     return (
         <div className="relative overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
-            <div />
+            {error && (
+                <div className="border-b border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+                    {error}
+                </div>
+            )}
             <div className="overflow-x-auto">
                 <table className="min-w-full text-left text-sm text-gray-700">
                     <thead className="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -186,7 +182,7 @@ export function ProjectTable(): JSX.Element {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
-                        {paddedEntries.map((project, index) => {
+                        {projects.map((project, index) => {
                             const isPlaceholder = !project.exists;
                             const statusMeta = project.status
                                 ? STATUS_META[project.status]
@@ -229,7 +225,9 @@ export function ProjectTable(): JSX.Element {
                                             </span>
                                         ) : (
                                             <Link
-                                                href={`https://${project.repository}`}
+                                                href={normalizeRepository(
+                                                    project.repository
+                                                )}
                                             >
                                                 {project.repository}
                                             </Link>
@@ -272,15 +270,16 @@ export function ProjectTable(): JSX.Element {
                     </tbody>
                 </table>
             </div>
-            <div className="flex items-center justify-end gap-6 border-t border-gray-100 bg-gray-50 px-6 py-3 text-xs text-gray-500">
-                <span className="font-mono uppercase tracking-[0.25em] text-gray-400">
-                    Page 1 of 1
-                </span>
+            <div className="flex items-center justify-between gap-6 border-t border-gray-100 bg-gray-50 px-6 py-3 text-xs text-gray-500">
+                <div className="flex items-center gap-3 text-gray-500">
+                    {loading ? "Loading projects…" : pageLabel}
+                </div>
                 <div className="flex items-center gap-4">
                     <button
                         type="button"
+                        onClick={prevPage}
                         className="inline-flex items-center gap-1 font-semibold text-gray-400 transition hover:text-gray-600 disabled:cursor-not-allowed disabled:text-gray-300"
-                        disabled
+                        disabled={loading || page === 0}
                     >
                         <span aria-hidden className="text-sm">
                             ←
@@ -289,8 +288,9 @@ export function ProjectTable(): JSX.Element {
                     </button>
                     <button
                         type="button"
+                        onClick={nextPage}
                         className="inline-flex items-center gap-1 font-semibold text-gray-400 transition hover:text-gray-600 disabled:cursor-not-allowed disabled:text-gray-300"
-                        disabled
+                        disabled={loading || page + 1 >= totalPages}
                     >
                         Next
                         <span aria-hidden className="text-sm">

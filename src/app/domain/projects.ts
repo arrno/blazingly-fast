@@ -18,10 +18,27 @@ export type Project = {
     status: Status;
 };
 
-function SupplementProject(
+export function supplementProject(
     project: Project,
     githubResponse: GithubResponse
 ): Project {
-    // TODO
-    return project;
+    const repository = githubResponse.full_name
+        ? `github.com/${githubResponse.full_name}`
+        : project.repository;
+
+    const maintainer = githubResponse.owner?.login
+        ? githubResponse.owner.login
+        : project.maintainer;
+
+    return {
+        ...project,
+        name: githubResponse.name || project.name,
+        repository,
+        maintainer,
+        exists: true,
+    };
+}
+
+export function projectIdFromRepo(owner: string, repo: string): string {
+    return `${owner}__${repo}`.toLowerCase();
 }
