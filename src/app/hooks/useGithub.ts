@@ -33,3 +33,13 @@ export async function fetchGithubProject(
 
     return (await response.json()) as GithubResponse;
 }
+
+export async function githubProjectHasBadge(
+    request: GithubRequest
+): Promise<boolean> {
+    // TODO fetch project, check readme for https://blazingly.fast/badge.svg
+    // if repo exists and references our badge, return true else false
+    // when someone submits a repo, schedule a check in 24 hours.. if no badge,
+    // prune from hall of speed
+    return false;
+}
