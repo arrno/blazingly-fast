@@ -90,7 +90,7 @@ export function WhyProjectsSection() {
                     </div>
 
                     <a
-                        href="#leaderboard"
+                        href="/hall-of-speed"
                         className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 transition hover:text-gray-600"
                     >
                         See the full leaderboard

@@ -1,103 +1,124 @@
 import type { JSX } from "react";
 import Link from "next/link";
+import { Project, Status } from "../domain/projects";
 
-type ProjectEntry = {
-    name: string;
-    maintainer: string;
-    repo: string;
-    certifiedOn: string;
-    speedClaim: string;
-    status?: "fast" | "pending" | "average";
-    isPlaceholder?: boolean;
-};
+const long_blurb =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. precis";
 
-const projectEntries: ProjectEntry[] = [
+const projectEntries: Project[] = [
     {
+        id: "0",
+        certifiedDate: new Date(),
+        exists: true,
         name: "pipevine",
         maintainer: "Jess K.",
-        repo: "github.com/pipevine/app",
+        repository: "github.com/pipevine/app",
         certifiedOn: "Apr 11, 2024",
-        speedClaim: "2x faster builds than last Tuesday",
-        status: "fast",
+        blurb: "2x faster builds than last Tuesday",
+        status: Status.Fast,
     },
     {
+        id: "0",
+        certifiedDate: new Date(),
+        exists: true,
         name: "thread.fast",
         maintainer: "Lance & team",
-        repo: "github.com/threadfast/core",
+        repository: "github.com/threadfast/core",
         certifiedOn: "Mar 29, 2024",
-        speedClaim: "Latency so low it whispers",
-        status: "fast",
+        blurb: long_blurb,
+        status: Status.Fast,
     },
     {
+        id: "0",
+        certifiedDate: new Date(),
+        exists: true,
         name: "sidecar turbo",
         maintainer: "Amrita S.",
-        repo: "github.com/amritas/sidecar-turbo",
+        repository: "github.com/amritas/sidecar-turbo",
         certifiedOn: "Feb 18, 2024",
-        speedClaim: "Cold starts in a warm 28ms",
-        status: "average",
+        blurb: "Cold starts in a warm 28ms",
+        status: Status.Average,
     },
     {
+        id: "0",
+        certifiedDate: new Date(),
+        exists: true,
         name: "quantzip",
         maintainer: "Mina W.",
-        repo: "github.com/minaw/quantzip",
+        repository: "github.com/minaw/quantzip",
         certifiedOn: "Mar 07, 2024",
-        speedClaim: "Compresses before data arrives",
-        status: "fast",
+        blurb: "Compresses before data arrives",
+        status: Status.Fast,
     },
     {
+        id: "0",
+        certifiedDate: new Date(),
+        exists: true,
         name: "cachemancer",
         maintainer: "Eli + crew",
-        repo: "github.com/eli/cachemancer",
+        repository: "github.com/eli/cachemancer",
         certifiedOn: "Feb 02, 2024",
-        speedClaim: "Caches the caches of your caches",
-        status: "fast",
+        blurb: "Caches the caches of your caches",
+        status: Status.Fast,
     },
     {
+        id: "0",
+        certifiedDate: new Date(),
+        exists: true,
         name: "warp chronicle",
         maintainer: "Val & Arjun",
-        repo: "github.com/valandco/warp-chronicle",
+        repository: "github.com/valandco/warp-chronicle",
         certifiedOn: "Dec 08, 2023",
-        speedClaim: "Scheduling that outruns spacetime",
-        status: "average",
+        blurb: "Scheduling that outruns spacetime",
+        status: Status.Average,
     },
     {
+        id: "0",
+        certifiedDate: new Date(),
+        exists: true,
         name: "async orchard",
         maintainer: "Devlin H.",
-        repo: "github.com/devlinh/async-orchard",
+        repository: "github.com/devlinh/async-orchard",
         certifiedOn: "Oct 05, 2023",
-        speedClaim: "Harvests futures in parallel",
-        status: "fast",
+        blurb: "Harvests futures in parallel",
+        status: Status.Fast,
     },
     {
+        id: "0",
+        certifiedDate: new Date(),
+        exists: true,
         name: "glidekit",
         maintainer: "Risa M.",
-        repo: "github.com/risam/glidekit",
+        repository: "github.com/risam/glidekit",
         certifiedOn: "Sep 14, 2023",
-        speedClaim: "UI that boots before mount",
-        status: "fast",
+        blurb: "UI that boots before mount",
+        status: Status.Fast,
     },
     {
+        id: "0",
+        certifiedDate: new Date(),
+        exists: true,
         name: "latency lullaby",
         maintainer: "Small Perf Lab",
-        repo: "github.com/spl/latency-lullaby",
+        repository: "github.com/spl/latency-lullaby",
         certifiedOn: "Aug 22, 2023",
-        speedClaim: "Puts the p99 right to sleep",
-        status: "average",
+        blurb: "Puts the p99 right to sleep",
+        status: Status.Average,
     },
     {
+        id: "0",
+        certifiedDate: new Date(),
+        exists: true,
         name: "your project here",
         maintainer: "You?",
-        repo: "github.com/you/blazingly-fast",
+        repository: "github.com/you/blazingly-fast",
         certifiedOn: "Pending",
-        speedClaim: "Awaiting bold claims",
-        status: "fast",
+        blurb: "Awaiting bold claims",
+        status: Status.Fast,
     },
 ];
 
-const STATUS_META: Record<
-    NonNullable<ProjectEntry["status"]>,
-    { label: string; className: string }
-> = {
+const STATUS_META: Record<Status, { label: string; className: string }> = {
     fast: {
         label: "✓ blazingly fast",
         className: "text-[#FF5C5C]",
@@ -118,15 +139,18 @@ const STATUS_META: Record<
 
 const ROW_TARGET = 10;
 
-const paddedEntries: ProjectEntry[] = [...projectEntries];
+const paddedEntries: Project[] = [...projectEntries];
 while (paddedEntries.length < ROW_TARGET) {
     paddedEntries.push({
+        id: "0",
+        certifiedDate: new Date(),
+        exists: false,
         name: "",
         maintainer: "",
-        repo: "",
+        repository: "",
         certifiedOn: "",
-        speedClaim: "",
-        isPlaceholder: true,
+        status: Status.Average,
+        blurb: "",
     });
 }
 
@@ -163,9 +187,7 @@ export function ProjectTable(): JSX.Element {
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                         {paddedEntries.map((project, index) => {
-                            const isPlaceholder = Boolean(
-                                project.isPlaceholder
-                            );
+                            const isPlaceholder = !project.exists;
                             const statusMeta = project.status
                                 ? STATUS_META[project.status]
                                 : undefined;
@@ -173,7 +195,7 @@ export function ProjectTable(): JSX.Element {
                             return (
                                 <tr
                                     key={`${
-                                        project.repo ||
+                                        project.repository ||
                                         project.name ||
                                         "placeholder"
                                     }-${index}`}
@@ -207,9 +229,9 @@ export function ProjectTable(): JSX.Element {
                                             </span>
                                         ) : (
                                             <Link
-                                                href={`https://${project.repo}`}
+                                                href={`https://${project.repository}`}
                                             >
-                                                {project.repo}
+                                                {project.repository}
                                             </Link>
                                         )}
                                     </td>
@@ -228,7 +250,7 @@ export function ProjectTable(): JSX.Element {
                                                 —
                                             </span>
                                         ) : (
-                                            project.speedClaim
+                                            project.blurb
                                         )}
                                     </td>
                                     <td className="px-6 py-4 text-right">

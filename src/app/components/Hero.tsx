@@ -73,7 +73,7 @@ export function Hero() {
                             <span aria-hidden>→</span>
                         </GetCertifiedButton>
                         <Link
-                            href="#leaderboard"
+                            href="/hall-of-speed"
                             className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-800 transition hover:border-gray-300"
                         >
                             Browse the leaderboard
