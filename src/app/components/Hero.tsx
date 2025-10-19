@@ -28,7 +28,7 @@ export function Hero() {
     return (
         <div className="relative overflow-hidden bg-gradient-to-b from-white via-white to-gray-50">
             <div className="absolute inset-x-0 -top-20 -z-10 h-96 bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.12),_transparent_55%)]" />
-            <PageSection className="relative py-24">
+            <PageSection className="relative py-24" id="how-it-works">
                 <div className="mx-auto flex max-w-3xl flex-col items-center gap-10 text-center sm:items-start sm:text-left">
                     {/* <SplitBadge
                         leading="Certified"
@@ -86,7 +86,6 @@ export function Hero() {
 
                     <div
                         className="grid w-full gap-4 sm:grid-cols-3"
-                        id="how-it-works"
                         aria-labelledby="how-it-works-heading"
                     >
                         <h2 id="how-it-works-heading" className="sr-only">

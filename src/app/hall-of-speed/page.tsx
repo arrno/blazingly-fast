@@ -1,4 +1,5 @@
 import { Footer } from "../components/Footer";
+import { ModalForm } from "../components/ModalForm";
 import { Navbar } from "../components/Navbar";
 import { PageSection } from "../components/PageSection";
 import { ProjectTable } from "../components/ProjectTable";
@@ -28,6 +29,7 @@ export default function HallOfSpeedPage() {
                 </PageSection>
             </main>
             <Footer />
+            <ModalForm />
         </div>
     );
 }

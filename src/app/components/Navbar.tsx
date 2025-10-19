@@ -1,14 +1,27 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { PageSection } from "./PageSection";
 import { GetCertifiedButton } from "./GetCertifiedButton";
 
 const navLinks = [
     { label: "How it works", href: "#how-it-works" },
-    { label: "Why", href: "#why" },
     { label: "FAQ", href: "#faq" },
+    { label: "Why", href: "#why" },
 ];
 
 export function Navbar() {
+    const pathname = usePathname();
+    const isHome = pathname === "/";
+
+    const resolveHref = (href: string) => {
+        if (href.startsWith("#") && !isHome) {
+            return `/${href}`;
+        }
+        return href;
+    };
+
     return (
         <header className="sticky top-0 z-20 border-b border-black/5 bg-white/80 backdrop-blur">
             <PageSection
@@ -31,7 +44,7 @@ export function Navbar() {
                     {navLinks.map((link) => (
                         <Link
                             key={link.href}
-                            href={link.href}
+                            href={resolveHref(link.href)}
                             className="transition hover:text-gray-900"
                         >
                             {link.label}
@@ -46,9 +59,7 @@ export function Navbar() {
                     >
                         Leaderboard
                     </Link>
-                    <GetCertifiedButton
-                        className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
-                    >
+                    <GetCertifiedButton className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800">
                         Get certified
                         <span aria-hidden>→</span>
                     </GetCertifiedButton>
