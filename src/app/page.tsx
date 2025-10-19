@@ -10,21 +10,6 @@ export default function Home() {
         <div className="flex min-h-screen flex-col bg-white text-gray-900">
             <Navbar />
             <main className="flex-1">
-                <img
-                    src="/fast-badge.svg"
-                    alt="Blazingly fast badge"
-                    className="mx-auto mt-6 block"
-                />
-                <img
-                    src="/slow-badge.svg"
-                    alt="Blazingly pending badge"
-                    className="mx-auto mt-2 block"
-                />
-                <img
-                    src="/mid-badge.svg"
-                    alt="Blazingly pending badge"
-                    className="mx-auto mt-2 block"
-                />
                 <Hero />
                 <CertificationSection />
                 <WhyProjectsSection />

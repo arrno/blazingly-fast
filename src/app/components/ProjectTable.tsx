@@ -7,7 +7,7 @@ type ProjectEntry = {
     repo: string;
     certifiedOn: string;
     speedClaim: string;
-    status?: string;
+    status?: "fast" | "pending" | "average";
     isPlaceholder?: boolean;
 };
 
@@ -18,7 +18,7 @@ const projectEntries: ProjectEntry[] = [
         repo: "github.com/pipevine/app",
         certifiedOn: "Apr 11, 2024",
         speedClaim: "2x faster builds than last Tuesday",
-        status: "Certified",
+        status: "fast",
     },
     {
         name: "thread.fast",
@@ -26,7 +26,7 @@ const projectEntries: ProjectEntry[] = [
         repo: "github.com/threadfast/core",
         certifiedOn: "Mar 29, 2024",
         speedClaim: "Latency so low it whispers",
-        status: "Certified",
+        status: "fast",
     },
     {
         name: "sidecar turbo",
@@ -34,7 +34,55 @@ const projectEntries: ProjectEntry[] = [
         repo: "github.com/amritas/sidecar-turbo",
         certifiedOn: "Feb 18, 2024",
         speedClaim: "Cold starts in a warm 28ms",
-        status: "Certified",
+        status: "average",
+    },
+    {
+        name: "quantzip",
+        maintainer: "Mina W.",
+        repo: "github.com/minaw/quantzip",
+        certifiedOn: "Mar 07, 2024",
+        speedClaim: "Compresses before data arrives",
+        status: "fast",
+    },
+    {
+        name: "cachemancer",
+        maintainer: "Eli + crew",
+        repo: "github.com/eli/cachemancer",
+        certifiedOn: "Feb 02, 2024",
+        speedClaim: "Caches the caches of your caches",
+        status: "fast",
+    },
+    {
+        name: "warp chronicle",
+        maintainer: "Val & Arjun",
+        repo: "github.com/valandco/warp-chronicle",
+        certifiedOn: "Dec 08, 2023",
+        speedClaim: "Scheduling that outruns spacetime",
+        status: "average",
+    },
+    {
+        name: "async orchard",
+        maintainer: "Devlin H.",
+        repo: "github.com/devlinh/async-orchard",
+        certifiedOn: "Oct 05, 2023",
+        speedClaim: "Harvests futures in parallel",
+        status: "fast",
+    },
+    {
+        name: "glidekit",
+        maintainer: "Risa M.",
+        repo: "github.com/risam/glidekit",
+        certifiedOn: "Sep 14, 2023",
+        speedClaim: "UI that boots before mount",
+        status: "fast",
+    },
+    {
+        name: "latency lullaby",
+        maintainer: "Small Perf Lab",
+        repo: "github.com/spl/latency-lullaby",
+        certifiedOn: "Aug 22, 2023",
+        speedClaim: "Puts the p99 right to sleep",
+        status: "average",
     },
     {
         name: "your project here",
@@ -42,9 +90,31 @@ const projectEntries: ProjectEntry[] = [
         repo: "github.com/you/blazingly-fast",
         certifiedOn: "Pending",
         speedClaim: "Awaiting bold claims",
-        status: "Submit",
+        status: "fast",
     },
 ];
+
+const STATUS_META: Record<
+    NonNullable<ProjectEntry["status"]>,
+    { label: string; className: string }
+> = {
+    fast: {
+        label: "✓ blazingly fast",
+        className: "text-[#FF5C5C]",
+    },
+    pending: {
+        label: "blazingly pending",
+        className: "text-[#8F7DEB]",
+    },
+    average: {
+        label: "blazingly average",
+        className: "text-[#8F7DEB]",
+    },
+    // average: {
+    //     label: "blazingly average",
+    //     className: "text-[#28A745]",
+    // },
+};
 
 const ROW_TARGET = 10;
 
@@ -96,6 +166,9 @@ export function ProjectTable(): JSX.Element {
                             const isPlaceholder = Boolean(
                                 project.isPlaceholder
                             );
+                            const statusMeta = project.status
+                                ? STATUS_META[project.status]
+                                : undefined;
 
                             return (
                                 <tr
@@ -159,13 +232,15 @@ export function ProjectTable(): JSX.Element {
                                         )}
                                     </td>
                                     <td className="px-6 py-4 text-right">
-                                        {isPlaceholder ? (
+                                        {isPlaceholder || !statusMeta ? (
                                             <span className="text-gray-300">
                                                 —
                                             </span>
                                         ) : (
-                                            <p className="m-0 flex items-center justify-end gap-2 font-mono text-xs font-semibold tracking-wide text-[#e45656]">
-                                                ✓ blazingly fast
+                                            <p
+                                                className={`m-0 flex items-center justify-end gap-2 font-mono text-xs font-semibold tracking-wide ${statusMeta.className}`}
+                                            >
+                                                {statusMeta.label}
                                             </p>
                                         )}
                                     </td>

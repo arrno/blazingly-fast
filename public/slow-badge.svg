@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="123.662501" height="20">
-  <title>blazingly pending</title>
+  <title>blazingly average</title>
   <defs>
     <linearGradient id="workflow-fill" x1="50%" y1="0%" x2="50%" y2="100%">
       <stop stop-color="#505862" offset="0%"></stop>
@@ -23,10 +23,10 @@
     <g transform="translate(70.4125)" font-family="&#39;DejaVu Sans&#39;,Verdana,Geneva,sans-serif" font-size="11">
       <path d="M0 0h49.439C51.129 0 52.5 1.343 52.5 3v14c0 1.657-1.37 3-3.061 3H0V0z" id="state-bg" fill="url(#state-fill)" fill-rule="nonzero"></path>
       <text fill="#010101" fill-opacity=".3" aria-hidden="true">
-        <tspan x="4" y="15">pending</tspan>
+        <tspan x="4" y="15">average</tspan>
       </text>
       <text fill="#FFFFFF">
-        <tspan x="4" y="14">pending</tspan>
+        <tspan x="4" y="14">average</tspan>
       </text>
     </g>
     <path

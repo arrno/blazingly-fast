@@ -8,13 +8,30 @@ export function Footer() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.18),_transparent_60%)]" />
             <PageSection className="relative flex flex-col gap-12 py-20 sm:py-24">
                 <div className="space-y-4 max-w-3xl">
-                    <SplitBadge
+                    {/* <SplitBadge
                         leading="Certified"
                         trailing="Blazingly Fast™"
                         color="#ff6b6b"
                         className="border-white/10"
                         trailingClassName="bg-white/10 text-white/80"
-                    />
+                    /> */}
+                    <div className="flex gap-2">
+                        <img
+                            src="/fast-badge.svg"
+                            alt="Blazingly fast badge"
+                            className="mt-2"
+                        />
+                        {/* <img
+                            src="/slow-badge.svg"
+                            alt="Blazingly pending badge"
+                            className="mt-2"
+                        /> */}
+                        {/* <img
+                            src="/mid-badge.svg"
+                            alt="Blazingly average badge"
+                            className="mt-2"
+                        /> */}
+                    </div>
                     <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
                         The trust fall of performance claims.
                     </h2>
