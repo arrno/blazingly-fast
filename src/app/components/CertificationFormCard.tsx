@@ -69,7 +69,7 @@ export function CertificationFormCard({
                         <div className="mt-3 overflow-hidden rounded-xl bg-gray-900">
                             <pre className="w-full overflow-x-auto text-[13px] leading-relaxed text-gray-100">
                                 <code className="block w-max whitespace-pre px-4 py-3 font-mono">
-                                    {`![blazingly fast](https://blazingly.fast/badge.svg?repo=you/yourproject)`}
+                                    {`![blazingly fast](https://blazingly.fast/api/badge.svg?repo=you/yourproject)`}
                                 </code>
                             </pre>
                         </div>

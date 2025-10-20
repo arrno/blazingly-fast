@@ -62,7 +62,7 @@ export function ModalForm() {
             return "";
         }
         const encodedRepo = encodeURIComponent(repoSlug);
-        return `![blazingly fast](https://blazingly.fast/badge.svg?repo=${encodedRepo})`;
+        return `![blazingly fast](https://blazingly.fast/api/badge.svg?repo=${encodedRepo})`;
     }, [repoSlug, status]);
 
     const handleSubmit = useCallback(
