@@ -3,7 +3,7 @@ import { PageSection } from "./PageSection";
 const projects = [
     { name: "pipevine", stars: "⭐⭐⭐", certification: "✅ blazingly fast" },
     {
-        name: "thread.fast",
+        name: "dataframe",
         stars: "⭐⭐⭐⭐",
         certification: "✅ blazingly fast",
     },

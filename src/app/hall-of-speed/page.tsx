@@ -1,8 +1,36 @@
+import type { Metadata } from "next";
 import { Footer } from "../components/Footer";
 import { ModalForm } from "../components/ModalForm";
 import { Navbar } from "../components/Navbar";
 import { PageSection } from "../components/PageSection";
 import { ProjectTable } from "../components/ProjectTable";
+
+const description =
+    "Browse every Certified Blazingly Fast™ project, complete with maintainers, repos, and speed claims in the Hall of Speed.";
+
+export const metadata: Metadata = {
+    title: "Hall of Speed",
+    description,
+    alternates: {
+        canonical: "/hall-of-speed",
+    },
+    openGraph: {
+        title: "Hall of Speed",
+        description,
+        url: "https://blazingly.fast/hall-of-speed",
+        images: [
+            {
+                url: "/fast-badge.svg",
+                alt: "Certified Blazingly Fast badge",
+            },
+        ],
+    },
+    twitter: {
+        title: "Hall of Speed",
+        description,
+        images: ["/fast-badge.svg"],
+    },
+};
 
 export default function HallOfSpeedPage() {
     return (
