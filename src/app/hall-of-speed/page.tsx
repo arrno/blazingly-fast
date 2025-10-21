@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ContactModal } from "../components/ContactModal";
 import { Footer } from "../components/Footer";
 import { ModalForm } from "../components/ModalForm";
 import { Navbar } from "../components/Navbar";
@@ -58,6 +59,7 @@ export default function HallOfSpeedPage() {
             </main>
             <Footer />
             <ModalForm />
+            <ContactModal />
         </div>
     );
 }

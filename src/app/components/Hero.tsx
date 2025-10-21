@@ -46,11 +46,6 @@ export function Hero() {
                             alt="Blazingly pending badge"
                             className="mt-2"
                         />
-                        <img
-                            src="/mid-badge.svg"
-                            alt="Blazingly average badge"
-                            className="mt-2 hidden"
-                        />
                     </div>
 
                     <div className="space-y-6">

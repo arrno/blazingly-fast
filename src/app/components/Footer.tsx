@@ -1,6 +1,7 @@
 import { PageSection } from "./PageSection";
 import { SplitBadge } from "./SplitBadge";
 import { GetCertifiedButton } from "./GetCertifiedButton";
+import { ContactModalTrigger } from "./ContactModalTrigger";
 
 export function Footer() {
     return (
@@ -24,11 +25,6 @@ export function Footer() {
                         {/* <img
                             src="/slow-badge.svg"
                             alt="Blazingly pending badge"
-                            className="mt-2"
-                        /> */}
-                        {/* <img
-                            src="/mid-badge.svg"
-                            alt="Blazingly average badge"
                             className="mt-2"
                         /> */}
                     </div>
@@ -65,7 +61,10 @@ export function Footer() {
                         © {new Date().getFullYear()} blazingly.fast — run
                         responsibly.
                     </span>
-                    <span>Powered entirely by trust and good vibes.</span>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+                        <span>Powered entirely by trust and good vibes.</span>
+                        <ContactModalTrigger className="text-white/60" />
+                    </div>
                 </div>
             </PageSection>
         </footer>

@@ -1,4 +1,5 @@
 import { CertificationSection } from "./components/CertificationSection";
+import { ContactModal } from "./components/ContactModal";
 import { Footer } from "./components/Footer";
 import { Hero } from "./components/Hero";
 import { ModalForm } from "./components/ModalForm";
@@ -16,6 +17,7 @@ export default function Home() {
             </main>
             <Footer />
             <ModalForm />
+            <ContactModal />
         </div>
     );
 }

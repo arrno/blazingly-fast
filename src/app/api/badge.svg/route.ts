@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 const STATUS_TO_BADGE: Record<Status, string> = {
     [Status.Fast]: "fast-badge.svg",
-    [Status.Pending]: "mid-badge.svg",
+    [Status.Pending]: "slow-badge.svg",
     [Status.Average]: "slow-badge.svg",
 };
 

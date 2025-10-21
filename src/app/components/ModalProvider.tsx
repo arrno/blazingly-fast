@@ -9,7 +9,7 @@ import {
     useState,
 } from "react";
 
-export type ModalType = "certification" | null;
+export type ModalType = "certification" | "contact" | null;
 
 interface ModalContextValue {
     modalType: ModalType;
