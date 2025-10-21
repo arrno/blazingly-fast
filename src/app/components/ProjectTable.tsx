@@ -155,28 +155,34 @@ export function ProjectTable(): JSX.Element {
                 </div>
             )}
             <div className="overflow-x-auto">
-                <table className="min-w-full text-left text-sm text-gray-700">
-                    <thead className="bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <table className="min-w-full text-left text-xs text-gray-700 sm:text-sm">
+                    <thead className="bg-gray-50 text-[0.65rem] font-semibold uppercase tracking-wide text-gray-500 sm:text-xs">
                         <tr>
-                            <th scope="col" className="px-6 py-5">
+                            <th scope="col" className="px-4 py-4 sm:px-6 sm:py-5">
                                 Project
                             </th>
-                            <th scope="col" className="px-6 py-5">
+                            <th
+                                scope="col"
+                                className="hidden px-4 py-4 sm:px-6 sm:py-5 md:table-cell"
+                            >
                                 Maintainer
                             </th>
-                            <th scope="col" className="px-6 py-5">
+                            <th
+                                scope="col"
+                                className="hidden px-4 py-4 sm:px-6 sm:py-5 md:table-cell"
+                            >
                                 Repository
                             </th>
                             <th
                                 scope="col"
-                                className="min-w-[140px] px-6 py-5 whitespace-nowrap"
+                                className="min-w-[140px] px-4 py-4 sm:px-6 sm:py-5"
                             >
                                 Certified On
                             </th>
-                            <th scope="col" className="px-6 py-5">
+                            <th scope="col" className="px-4 py-4 sm:px-6 sm:py-5">
                                 Speed Claim
                             </th>
-                            <th scope="col" className="px-6 py-5 text-right">
+                            <th scope="col" className="px-4 py-4 text-right sm:px-6 sm:py-5">
                                 Status
                             </th>
                         </tr>
@@ -199,7 +205,7 @@ export function ProjectTable(): JSX.Element {
                                 >
                                     <th
                                         scope="row"
-                                        className="whitespace-nowrap px-6 py-4 text-sm font-semibold text-gray-900"
+                                        className="px-4 py-3 text-left font-semibold text-gray-900 sm:px-6 sm:py-4"
                                     >
                                         {isPlaceholder ? (
                                             <span className="text-gray-300">
@@ -209,7 +215,7 @@ export function ProjectTable(): JSX.Element {
                                             project.name
                                         )}
                                     </th>
-                                    <td className="px-6 py-4 text-gray-600">
+                                    <td className="hidden px-4 py-3 text-gray-600 sm:px-6 sm:py-4 md:table-cell">
                                         {isPlaceholder ? (
                                             <span className="text-gray-300">
                                                 —
@@ -218,7 +224,7 @@ export function ProjectTable(): JSX.Element {
                                             project.maintainer
                                         )}
                                     </td>
-                                    <td className="px-6 py-4 font-mono text-xs text-gray-500">
+                                    <td className="hidden break-words px-4 py-3 font-mono text-[0.65rem] text-gray-500 sm:px-6 sm:py-4 sm:text-xs md:table-cell">
                                         {isPlaceholder ? (
                                             <span className="text-gray-300">
                                                 —
@@ -233,7 +239,7 @@ export function ProjectTable(): JSX.Element {
                                             </Link>
                                         )}
                                     </td>
-                                    <td className="min-w-[140px] whitespace-nowrap px-6 py-4 text-gray-600">
+                                    <td className="min-w-[140px] whitespace-nowrap px-4 py-3 text-gray-600 sm:px-6 sm:py-4">
                                         {isPlaceholder ? (
                                             <span className="text-gray-300">
                                                 —
@@ -242,23 +248,32 @@ export function ProjectTable(): JSX.Element {
                                             project.certifiedOn
                                         )}
                                     </td>
-                                    <td className="px-6 py-4 text-gray-600">
+                                    <td
+                                        className="px-4 py-3 text-gray-600 sm:px-6 sm:py-4"
+                                        title={
+                                            !isPlaceholder && project.blurb
+                                                ? project.blurb
+                                                : undefined
+                                        }
+                                    >
                                         {isPlaceholder ? (
                                             <span className="text-gray-300">
                                                 —
                                             </span>
                                         ) : (
-                                            project.blurb
+                                            <span className="line-clamp-2 sm:line-clamp-none">
+                                                {project.blurb}
+                                            </span>
                                         )}
                                     </td>
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-4 py-3 text-right sm:px-6 sm:py-4">
                                         {isPlaceholder || !statusMeta ? (
                                             <span className="text-gray-300">
                                                 —
                                             </span>
                                         ) : (
                                             <p
-                                                className={`m-0 flex items-center justify-end gap-2 font-mono text-xs font-semibold tracking-wide ${statusMeta.className}`}
+                                                className={`m-0 flex items-center justify-end gap-2 font-mono text-[0.625rem] font-semibold tracking-wide sm:text-xs ${statusMeta.className}`}
                                             >
                                                 {statusMeta.label}
                                             </p>

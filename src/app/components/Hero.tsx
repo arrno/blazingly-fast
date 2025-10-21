@@ -68,17 +68,19 @@ export function Hero() {
                     </div>
 
                     <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
-                        <GetCertifiedButton className="inline-flex items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-gray-900/10 transition hover:bg-gray-800">
-                            Submit your repo
-                            <span aria-hidden>→</span>
-                        </GetCertifiedButton>
-                        <Link
-                            href="/hall-of-speed"
-                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-800 transition hover:border-gray-300"
-                        >
-                            Browse the leaderboard
-                        </Link>
-                        <span className="text-xs text-gray-500">
+                        <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start w-55 sm:w-auto">
+                            <GetCertifiedButton className="flex w-full items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-gray-900/10 transition hover:bg-gray-800 sm:inline-flex sm:w-auto">
+                                Submit your repo
+                                <span aria-hidden>→</span>
+                            </GetCertifiedButton>
+                            <Link
+                                href="/hall-of-speed"
+                                className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-800 transition hover:border-gray-300 sm:inline-flex sm:w-auto"
+                            >
+                                Browse the leaderboard
+                            </Link>
+                        </div>
+                        <span className="w-full text-center text-xs text-gray-500 sm:w-auto sm:text-left">
                             *Statistically significant in vibes, not in
                             benchmarks.
                         </span>

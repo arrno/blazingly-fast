@@ -40,7 +40,7 @@ export function Navbar() {
                     </span>
                 </Link>
 
-                <nav className="hidden items-center gap-6 text-sm font-medium text-gray-600 sm:flex">
+                <nav className="hidden items-center gap-6 text-sm font-medium text-gray-600 md:flex">
                     {navLinks.map((link) => (
                         <Link
                             key={link.href}

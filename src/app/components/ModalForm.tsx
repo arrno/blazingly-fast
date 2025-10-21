@@ -36,6 +36,7 @@ export function ModalForm() {
     );
     const [error, setError] = useState<string | null>(null);
     const [successRepo, setSuccessRepo] = useState<string | null>(null);
+    const [isCompact, setIsCompact] = useState(false);
 
     useEffect(() => {
         if (!open) {
@@ -47,6 +48,17 @@ export function ModalForm() {
             setSuccessRepo(null);
         }
     }, [open]);
+
+    useEffect(() => {
+        const updateCompactMode = () => {
+            setIsCompact(window.innerHeight < 750);
+        };
+
+        updateCompactMode();
+
+        window.addEventListener("resize", updateCompactMode);
+        return () => window.removeEventListener("resize", updateCompactMode);
+    }, []);
 
     const repoSlug = useMemo(() => normalizeRepoInput(repoInput), [repoInput]);
     const trimmedBlurb = useMemo(() => blurb.trim(), [blurb]);
@@ -118,21 +130,43 @@ export function ModalForm() {
         [repoSlug, isFast, isBlurbValid, trimmedBlurb]
     );
 
+    const containerSpacingClass = isCompact ? "space-y-6" : "space-y-8";
+    const headerSpacingClass = isCompact ? "space-y-1" : "space-y-2";
+    const headingTextClass = `${
+        isCompact ? "text-xl" : "text-2xl"
+    } font-semibold tracking-tight text-gray-900`;
+    const formSpacingClass = isCompact ? "space-y-5" : "space-y-6";
+    const fieldsetPaddingClass = isCompact
+        ? "space-y-2 rounded-2xl border border-gray-200 bg-white p-3"
+        : "space-y-3 rounded-2xl border border-gray-200 bg-white p-4";
+    const textareaClass = `w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)] ${
+        isCompact ? "min-h-[72px]" : "min-h-[96px]"
+    }`;
+    const submitButtonClass = `inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-8 ${
+        isCompact ? "py-3" : "py-4"
+    } text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-200 w-full`;
+
     return (
         <Modal open={open} onClose={closeModal} ariaLabel="Certification form">
-            <div className="space-y-8">
-                <header className="space-y-2">
-                    <h2 className="text-2xl font-semibold tracking-tight text-gray-900">
+            <div className={containerSpacingClass}>
+                <header className={headerSpacingClass}>
+                    <h2 className={headingTextClass}>
                         Submit your project
                     </h2>
-                    <p className="text-sm text-gray-600">
-                        Claim the badge in three moves: paste your repo, choose
-                        honesty, write your speed boast, and we will handle the
-                        rest.
-                    </p>
+                    {isCompact ? (
+                        <p className="text-xs text-gray-500">
+                            Paste your repo, confirm it&apos;s fast, and submit.
+                        </p>
+                    ) : (
+                        <p className="text-sm text-gray-600">
+                            Claim the badge in three moves: paste your repo,
+                            choose honesty, write your speed boast, and we will
+                            handle the rest.
+                        </p>
+                    )}
                 </header>
 
-                <form className="space-y-6" onSubmit={handleSubmit}>
+                <form className={formSpacingClass} onSubmit={handleSubmit}>
                     <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
                         Repo URL
                         <input
@@ -145,7 +179,7 @@ export function ModalForm() {
                         />
                     </label>
 
-                    <fieldset className="space-y-3 rounded-2xl border border-gray-200 bg-white p-4">
+                    <fieldset className={fieldsetPaddingClass}>
                         <legend className="text-xs font-semibold uppercase tracking-wider text-gray-500">
                             Is your project blazingly fast?
                         </legend>
@@ -180,7 +214,7 @@ export function ModalForm() {
                             maxLength={128}
                             onChange={(event) => setBlurb(event.target.value)}
                             placeholder="Tell us how blazingly fast you are in 128 characters."
-                            className="min-h-[96px] w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)]"
+                            className={textareaClass}
                         />
                         <span className="self-end text-xs text-gray-400">
                             {blurbLength}/128
@@ -204,7 +238,7 @@ export function ModalForm() {
                         <button
                             type="submit"
                             disabled={!isComplete}
-                            className="inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-8 py-4 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-200 w-full"
+                            className={submitButtonClass}
                         >
                             {status === "submitting"
                                 ? "Submitting…"
