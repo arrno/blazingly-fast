@@ -167,59 +167,65 @@ export function ModalForm() {
                 </header>
 
                 <form className={formSpacingClass} onSubmit={handleSubmit}>
-                    <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
-                        Repo URL
-                        <input
-                            value={repoInput}
-                            onChange={(event) =>
-                                setRepoInput(event.target.value)
-                            }
-                            placeholder="https://github.com/you/yourproject"
-                            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)]"
-                        />
-                    </label>
+                    {status !== "success" && (
+                        <>
+                            <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
+                                Repo URL
+                                <input
+                                    value={repoInput}
+                                    onChange={(event) =>
+                                        setRepoInput(event.target.value)
+                                    }
+                                    placeholder="https://github.com/you/yourproject"
+                                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)]"
+                                />
+                            </label>
 
-                    <fieldset className={fieldsetPaddingClass}>
-                        <legend className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                            Is your project blazingly fast?
-                        </legend>
-                        <label className="flex items-center gap-3 text-sm text-gray-700">
-                            <input
-                                type="radio"
-                                name="isFast"
-                                value="yes"
-                                checked={isFast === "yes"}
-                                onChange={() => setIsFast("yes")}
-                                className="h-4 w-4 appearance-none rounded-full border border-gray-300 checked:border-[#ff6b6b] checked:bg-[#ff6b6b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b6b]/30"
-                            />
-                            Yes
-                        </label>
-                        <label className="flex items-center gap-3 text-sm text-gray-700">
-                            <input
-                                type="radio"
-                                name="isFast"
-                                value="no"
-                                checked={isFast === "no"}
-                                onChange={() => setIsFast("no")}
-                                className="h-4 w-4 appearance-none rounded-full border border-gray-300 checked:border-[#ff6b6b] checked:bg-[#ff6b6b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b6b]/30"
-                            />
-                            No (come back when it is)
-                        </label>
-                    </fieldset>
+                            <fieldset className={fieldsetPaddingClass}>
+                                <legend className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    Is your project blazingly fast?
+                                </legend>
+                                <label className="flex items-center gap-3 text-sm text-gray-700">
+                                    <input
+                                        type="radio"
+                                        name="isFast"
+                                        value="yes"
+                                        checked={isFast === "yes"}
+                                        onChange={() => setIsFast("yes")}
+                                        className="h-4 w-4 appearance-none rounded-full border border-gray-300 checked:border-[#ff6b6b] checked:bg-[#ff6b6b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b6b]/30"
+                                    />
+                                    Yes
+                                </label>
+                                <label className="flex items-center gap-3 text-sm text-gray-700">
+                                    <input
+                                        type="radio"
+                                        name="isFast"
+                                        value="no"
+                                        checked={isFast === "no"}
+                                        onChange={() => setIsFast("no")}
+                                        className="h-4 w-4 appearance-none rounded-full border border-gray-300 checked:border-[#ff6b6b] checked:bg-[#ff6b6b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b6b]/30"
+                                    />
+                                    No (come back when it is)
+                                </label>
+                            </fieldset>
 
-                    <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
-                        Speed claim blurb
-                        <textarea
-                            value={blurb}
-                            maxLength={128}
-                            onChange={(event) => setBlurb(event.target.value)}
-                            placeholder="Tell us how blazingly fast you are in 128 characters."
-                            className={textareaClass}
-                        />
-                        <span className="self-end text-xs text-gray-400">
-                            {blurbLength}/128
-                        </span>
-                    </label>
+                            <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
+                                Speed claim blurb
+                                <textarea
+                                    value={blurb}
+                                    maxLength={128}
+                                    onChange={(event) =>
+                                        setBlurb(event.target.value)
+                                    }
+                                    placeholder="Tell us how blazingly fast you are in 128 characters."
+                                    className={textareaClass}
+                                />
+                                <span className="self-end text-xs text-gray-400">
+                                    {blurbLength}/128
+                                </span>
+                            </label>
+                        </>
+                    )}
 
                     {error && (
                         <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -243,17 +249,19 @@ export function ModalForm() {
                         </div>
                     )}
 
-                    <div className="flex">
-                        <button
-                            type="submit"
-                            disabled={!isComplete}
-                            className={submitButtonClass}
-                        >
-                            {status === "submitting"
-                                ? "Submitting…"
-                                : "Submit project"}
-                        </button>
-                    </div>
+                    {status !== "success" && (
+                        <div className="flex">
+                            <button
+                                type="submit"
+                                disabled={!isComplete}
+                                className={submitButtonClass}
+                            >
+                                {status === "submitting"
+                                    ? "Submitting…"
+                                    : "Submit project"}
+                            </button>
+                        </div>
+                    )}
                 </form>
 
                 {badgeSnippet && (

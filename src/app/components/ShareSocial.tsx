@@ -8,8 +8,6 @@ interface SharePayload {
 }
 
 interface ShareSocialProps extends SharePayload {
-    shareUrl: string;
-    message: string;
     className?: string;
 }
 
@@ -25,7 +23,8 @@ function buildLinkedInUrl({ shareUrl, message }: SharePayload): string {
     const params = new URLSearchParams({
         mini: "true",
         url: shareUrl,
-        title: message,
+        title: "Certified Blazingly Fast™",
+        summary: message,
     });
     return `https://www.linkedin.com/shareArticle?${params.toString()}`;
 }
@@ -70,7 +69,7 @@ export function ShareSocial({ shareUrl, message, className = "" }: ShareSocialPr
                     >
                         <path
                             fill="currentColor"
-                            d="M20.98 3.5h-3.5l-4.07 5.38-3.6-5.38H3.03l7.48 10.8-6.85 9.2h3.52l4.4-5.94 4 5.94h6.33l-7.63-10.7 6.7-9.3z"
+                            d="M3 3h4.5l4.1 5.68L15.7 3H21l-7.5 9.2L21 21h-4.5l-4.4-6.06L7.9 21H3l7.6-9.06L3 3Z"
                         />
                     </svg>
                 </a>
@@ -89,7 +88,7 @@ export function ShareSocial({ shareUrl, message, className = "" }: ShareSocialPr
                     >
                         <path
                             fill="currentColor"
-                            d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2Zm-9.75 15.25H6.25V10h3v8.25ZM7.75 8.75a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5Zm10.5 9.5h-3v-4c0-.95-.78-1.75-1.75-1.75S11.75 13.3 11.75 14.25v4h-3V10h3v1.02a3.25 3.25 0 0 1 5.25 2.53v4.7Z"
+                            d="M4.98 3.5c0 1.38-1.12 2.5-2.49 2.5H2.4C1.05 6 0 4.88 0 3.5 0 2.12 1.1 1 2.45 1 3.8 1 4.9 2.12 4.98 3.5ZM0 8.5h4.9V23H0V8.5Zm7.6 0h4.7v1.98h.07c.66-1.24 2.28-2.54 4.69-2.54 5.02 0 5.94 3.3 5.94 7.59V23h-4.9v-7.17c0-1.71-.03-3.92-2.39-3.92-2.4 0-2.77 1.87-2.77 3.8V23H7.6V8.5Z"
                         />
                     </svg>
                 </a>
