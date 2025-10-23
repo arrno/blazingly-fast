@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useMemo, useState, FormEvent } from "react";
 import { Modal } from "./Modal";
 import { useModal } from "./ModalProvider";
+import { ShareSocial } from "./ShareSocial";
+import { Spinner } from "./Spinner";
 
 function normalizeRepoInput(input: string) {
     const trimmed = input.trim();
@@ -150,9 +152,7 @@ export function ModalForm() {
         <Modal open={open} onClose={closeModal} ariaLabel="Certification form">
             <div className={containerSpacingClass}>
                 <header className={headerSpacingClass}>
-                    <h2 className={headingTextClass}>
-                        Submit your project
-                    </h2>
+                    <h2 className={headingTextClass}>Submit your project</h2>
                     {isCompact ? (
                         <p className="text-xs text-gray-500">
                             Paste your repo, confirm it&apos;s fast, and submit.
@@ -227,10 +227,19 @@ export function ModalForm() {
                         </div>
                     )}
 
+                    {status === "submitting" && (
+                        <div className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-600">
+                            <Spinner
+                                className="h-5 w-5 text-gray-500"
+                                label="Submitting"
+                            />
+                            <span>Submitting your project…</span>
+                        </div>
+                    )}
+
                     {status === "success" && successRepo && (
                         <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-                            Project submitted! Your listing will appear once it
-                            is processed.
+                            Project accepted! Welcome to the Hall of Speed.
                         </div>
                     )}
 
@@ -262,6 +271,15 @@ export function ModalForm() {
                                 {badgeSnippet}
                             </code>
                         </pre>
+                        {successRepo && (
+                            <ShareSocial
+                                shareUrl={`https://blazingly.fast/api/badge.svg?repo=${encodeURIComponent(
+                                    successRepo
+                                )}`}
+                                message={`Just certified ${successRepo} as Blazingly Fast™ on https://blazingly.fast`}
+                                className="pt-2"
+                            />
+                        )}
                     </div>
                 )}
             </div>

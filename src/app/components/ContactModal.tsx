@@ -3,8 +3,10 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { Modal } from "./Modal";
 import { useModal } from "./ModalProvider";
+import { Spinner } from "./Spinner";
 import {
     buildContactFormSubmission,
+    sanitizeContactFormInput,
     type ContactFormSubmission,
 } from "../domain/contactForm";
 
@@ -58,7 +60,7 @@ export function ContactModal() {
         status !== "sending";
 
     const handleSubmit = useCallback(
-        (event: FormEvent<HTMLFormElement>) => {
+        async (event: FormEvent<HTMLFormElement>) => {
             event.preventDefault();
 
             if (trimmedSubject.length === 0) {
@@ -77,16 +79,61 @@ export function ContactModal() {
             }
 
             setError(null);
+            setSubmission(null);
             setStatus("sending");
 
-            const contactSubmission = buildContactFormSubmission({
+            const sanitizedInput = sanitizeContactFormInput({
                 subject: trimmedSubject,
                 fromEmail: trimmedEmail,
                 body: trimmedBody,
             });
 
-            setSubmission(contactSubmission);
-            setStatus("sent");
+            try {
+                const response = await fetch("/api/contact", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(sanitizedInput),
+                });
+
+                const payload = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    const message =
+                        typeof payload.error === "string"
+                            ? payload.error
+                            : "Unable to send message";
+                    throw new Error(message);
+                }
+
+                const submissionPayload = payload.submission as
+                    | {
+                          subject?: string;
+                          fromEmail?: string;
+                          body?: string;
+                          submittedAt?: string;
+                      }
+                    | undefined;
+
+                const submissionResult = buildContactFormSubmission({
+                    subject:
+                        submissionPayload?.subject ?? sanitizedInput.subject,
+                    fromEmail:
+                        submissionPayload?.fromEmail ??
+                        sanitizedInput.fromEmail,
+                    body: submissionPayload?.body ?? sanitizedInput.body,
+                    submittedAt: submissionPayload?.submittedAt
+                        ? new Date(submissionPayload.submittedAt)
+                        : new Date(),
+                });
+
+                setSubmission(submissionResult);
+                setStatus("sent");
+            } catch (submissionError) {
+                setStatus("idle");
+                setError((submissionError as Error).message);
+            }
         },
         [trimmedSubject, trimmedEmail, trimmedBody]
     );
@@ -128,6 +175,27 @@ export function ContactModal() {
                             We&apos;ll follow up at {submission.fromEmail}. Feel
                             free to close this window or send another note.
                         </p>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setStatus("idle");
+                                setSubmission(null);
+                                setSubject("");
+                                setFromEmail("");
+                                setBody("");
+                            }}
+                            className="inline-flex items-center justify-center gap-2 rounded-lg border border-emerald-300 bg-white px-4 py-2 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
+                        >
+                            Send another message
+                        </button>
+                    </div>
+                ) : status === "sending" ? (
+                    <div className="flex flex-col items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-5 text-sm text-emerald-800">
+                        <Spinner
+                            className="h-6 w-6 text-emerald-600"
+                            label="Sending"
+                        />
+                        <p>Sending your message…</p>
                     </div>
                 ) : (
                     <form className={formSpacingClass} onSubmit={handleSubmit}>
@@ -180,7 +248,7 @@ export function ContactModal() {
                                 disabled={!isFormValid}
                                 className={submitButtonClass}
                             >
-                                {status === "sending" ? "Sending…" : "Send"}
+                                Send
                             </button>
                         </div>
                     </form>
