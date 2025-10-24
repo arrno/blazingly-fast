@@ -40,5 +40,5 @@ export function supplementProject(
 }
 
 export function projectIdFromRepo(owner: string, repo: string): string {
-    return `${owner}__${repo}`.toLowerCase();
+    return `${owner}@${repo}`.toLowerCase();
 }

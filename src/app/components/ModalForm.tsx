@@ -284,7 +284,7 @@ export function ModalForm() {
                                 shareUrl={`https://blazingly.fast/api/badge.svg?repo=${encodeURIComponent(
                                     successRepo
                                 )}`}
-                                message={`Just certified ${successRepo} as Blazingly Fast™ on https://blazingly.fast`}
+                                message={`It's official! 🔥 Just certified ${successRepo} as Blazingly Fast™ on https://blazingly.fast\n\n`}
                                 className="pt-2"
                             />
                         )}
