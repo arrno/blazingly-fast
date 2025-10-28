@@ -44,7 +44,9 @@ export function Footer() {
 
                 <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 text-sm text-white/80 shadow-[0_20px_60px_-20px_rgba(15,23,42,0.6)] sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <p className="text-white">Ready to self-certify?</p>
+                        <p className="text-white mb-1">
+                            Ready to self-certify?
+                        </p>
                         <p className="text-white/70">
                             Submit your repo, check the box, and claim your
                             place in the Hall of Speed.

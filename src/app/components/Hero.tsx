@@ -58,7 +58,7 @@ export function Hero() {
                             <strong>blazingly fast</strong>. We believe you.
                             Submit your repo, tick &quot;Yes&quot;, and join the
                             official Hall of Speed with the badge that makes
-                            everything appear <em>12% faster*</em>.
+                            everything appear <em>12% faster</em>.
                         </p>
                     </div>
 
