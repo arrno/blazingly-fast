@@ -2,11 +2,8 @@
 
 import { useEffect, type JSX } from "react";
 import Link from "next/link";
-import {
-    Project,
-    Status,
-} from "../domain/projects";
-import { useCollection } from "../hooks/useCollection";
+import { Project, Status } from "../domain/projects";
+import { useCollectionSocket as useCollection } from "../hooks/useCollectionSocket";
 import type { QueryDocumentSnapshot } from "firebase/firestore";
 
 type FirestoreProject = {
@@ -158,7 +155,10 @@ export function ProjectTable(): JSX.Element {
                 <table className="min-w-full text-left text-xs text-gray-700 sm:text-sm">
                     <thead className="bg-gray-50 text-[0.65rem] font-semibold uppercase tracking-wide text-gray-500 sm:text-xs">
                         <tr>
-                            <th scope="col" className="px-4 py-4 sm:px-6 sm:py-5">
+                            <th
+                                scope="col"
+                                className="px-4 py-4 sm:px-6 sm:py-5"
+                            >
                                 Project
                             </th>
                             <th
@@ -179,10 +179,16 @@ export function ProjectTable(): JSX.Element {
                             >
                                 Certified On
                             </th>
-                            <th scope="col" className="px-4 py-4 sm:px-6 sm:py-5">
+                            <th
+                                scope="col"
+                                className="px-4 py-4 sm:px-6 sm:py-5"
+                            >
                                 Speed Claim
                             </th>
-                            <th scope="col" className="px-4 py-4 text-right sm:px-6 sm:py-5">
+                            <th
+                                scope="col"
+                                className="px-4 py-4 text-right sm:px-6 sm:py-5"
+                            >
                                 Status
                             </th>
                         </tr>

@@ -163,6 +163,7 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error) {
+        console.log(`Failed to process project submission. Err: ${error}`);
         const message = (error as Error).message;
         const status = /not found/i.test(message) ? 404 : 502;
         return NextResponse.json({ error: message }, { status });
