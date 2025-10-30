@@ -89,7 +89,9 @@ export function useCollectionSocket<T>(
                 let snapshotDocs: QueryDocumentSnapshot[] = [];
 
                 if (needsRebuild) {
-                    const nextCursors: Array<QueryDocumentSnapshot | undefined> = [];
+                    const nextCursors: Array<
+                        QueryDocumentSnapshot | undefined
+                    > = [];
                     let lastDoc: QueryDocumentSnapshot | undefined;
 
                     for (let index = 0; index <= targetPage; index += 1) {
@@ -129,19 +131,26 @@ export function useCollectionSocket<T>(
                         | QueryOrderByConstraint
                         | QueryLimitConstraint
                         | QueryStartAtConstraint
-                    > = [orderBy(orderByField, orderDirection), limit(pageSize)];
+                    > = [
+                        orderBy(orderByField, orderDirection),
+                        limit(pageSize),
+                    ];
 
                     if (targetPage > 0) {
                         const priorCursor = cursorsRef.current[targetPage - 1];
                         if (!priorCursor) {
-                            setError("Pagination cursor missing, please refresh.");
+                            setError(
+                                "Pagination cursor missing, please refresh."
+                            );
                             return;
                         }
 
                         constraints.push(startAfter(priorCursor));
                     }
 
-                    const snapshot = await getDocs(query(collRef, ...constraints));
+                    const snapshot = await getDocs(
+                        query(collRef, ...constraints)
+                    );
                     snapshotDocs = snapshot.docs;
 
                     if (snapshot.docs.length > 0) {
