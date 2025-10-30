@@ -125,6 +125,7 @@ export function ProjectTable(): JSX.Element {
         error,
         page,
         totalPages,
+        hasStaleData,
         nextPage,
         prevPage,
         refresh,
@@ -149,6 +150,18 @@ export function ProjectTable(): JSX.Element {
             {error && (
                 <div className="border-b border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
                     {error}
+                </div>
+            )}
+            {hasStaleData && page > 0 && (
+                <div className="border-b border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+                    <span>New speedsters arriving! ⭐</span>
+                    <button
+                        type="button"
+                        className="ml-2 font-semibold underline hover:text-blue-900"
+                        onClick={refresh}
+                    >
+                        Fetch latest
+                    </button>
                 </div>
             )}
             <div className="overflow-x-auto">

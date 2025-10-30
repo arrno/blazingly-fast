@@ -41,8 +41,9 @@ if (missingEnv.length > 0) {
 }
 
 const seed = async () => {
-    for (let i = 0; i < 47; i++) {
+    for (let i = 0; i < 1000; i++) {
         console.log(`seeding doc ${i}`);
+        await new Promise((r) => setTimeout(r, 2000));
 
         const project: Project = {
             blurb: "woop woop",
@@ -57,7 +58,7 @@ const seed = async () => {
         };
 
         const now = new Date();
-        const docId = `arrno@test_${i}_${i}_${i}`;
+        const docId = `arrno@test_${i}}`;
 
         const payload = {
             ...project,

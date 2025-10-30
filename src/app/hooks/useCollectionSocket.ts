@@ -33,9 +33,14 @@ type UseCollectionSocketState<T> = {
     pageSize: number;
     totalRecords: number;
     totalPages: number;
+    hasStaleData: boolean;
     nextPage: () => void;
     prevPage: () => void;
     refresh: () => void;
+};
+
+type FetchPageOptions = {
+    rebuildChain?: boolean;
 };
 
 export function useCollectionSocket<T>(
@@ -46,7 +51,7 @@ export function useCollectionSocket<T>(
     const orderByField = options.orderByField ?? documentId();
     const orderDirection = options.orderDirection ?? "asc";
     const mapDocument = options.mapDocument;
-    const cursorsRef = useRef<QueryDocumentSnapshot[]>([]);
+    const cursorsRef = useRef<Array<QueryDocumentSnapshot | undefined>>([]);
     const currentPageRef = useRef(0);
     const totalRecordsRef = useRef(0);
 
@@ -55,6 +60,7 @@ export function useCollectionSocket<T>(
     const [totalRecords, setTotalRecords] = useState(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [hasStaleData, setHasStaleData] = useState(false);
 
     const totalPages = useMemo(() => {
         if (totalRecords === 0) {
@@ -64,47 +70,99 @@ export function useCollectionSocket<T>(
     }, [pageSize, totalRecords]);
 
     const fetchPage = useCallback(
-        async (targetPage: number) => {
+        async (targetPage: number, options: FetchPageOptions = {}) => {
             const firestore = getClientFirestore();
             if (!firestore) {
                 setError("Missing Firebase client configuration");
                 return;
             }
 
+            const needsRebuild =
+                options.rebuildChain ||
+                (targetPage > 0 && !cursorsRef.current[targetPage - 1]);
+
             setLoading(true);
             setError(null);
 
             try {
                 const collRef = collection(firestore, collectionName);
-                const constraints: Array<
-                    | QueryOrderByConstraint
-                    | QueryLimitConstraint
-                    | QueryStartAtConstraint
-                > = [orderBy(orderByField, orderDirection), limit(pageSize)];
+                let snapshotDocs: QueryDocumentSnapshot[] = [];
 
-                if (targetPage > 0) {
-                    const priorCursor = cursorsRef.current[targetPage - 1];
-                    if (priorCursor) {
+                if (needsRebuild) {
+                    const nextCursors: Array<QueryDocumentSnapshot | undefined> = [];
+                    let lastDoc: QueryDocumentSnapshot | undefined;
+
+                    for (let index = 0; index <= targetPage; index += 1) {
+                        const pageConstraints: Array<
+                            | QueryOrderByConstraint
+                            | QueryLimitConstraint
+                            | QueryStartAtConstraint
+                        > = [
+                            orderBy(orderByField, orderDirection),
+                            limit(pageSize),
+                        ];
+
+                        if (lastDoc) {
+                            pageConstraints.push(startAfter(lastDoc));
+                        }
+
+                        const pageSnapshot = await getDocs(
+                            query(collRef, ...pageConstraints)
+                        );
+
+                        if (pageSnapshot.docs.length > 0) {
+                            lastDoc =
+                                pageSnapshot.docs[pageSnapshot.docs.length - 1];
+                            nextCursors[index] = lastDoc;
+                        } else {
+                            nextCursors[index] = lastDoc;
+                        }
+
+                        if (index === targetPage) {
+                            snapshotDocs = pageSnapshot.docs;
+                        }
+                    }
+
+                    cursorsRef.current = nextCursors;
+                } else {
+                    const constraints: Array<
+                        | QueryOrderByConstraint
+                        | QueryLimitConstraint
+                        | QueryStartAtConstraint
+                    > = [orderBy(orderByField, orderDirection), limit(pageSize)];
+
+                    if (targetPage > 0) {
+                        const priorCursor = cursorsRef.current[targetPage - 1];
+                        if (!priorCursor) {
+                            setError("Pagination cursor missing, please refresh.");
+                            return;
+                        }
+
                         constraints.push(startAfter(priorCursor));
-                    } else {
-                        // No prior cursor means the cached pagination is invalid.
-                        setError("Pagination cursor missing, please refresh.");
-                        setLoading(false);
-                        return;
+                    }
+
+                    const snapshot = await getDocs(query(collRef, ...constraints));
+                    snapshotDocs = snapshot.docs;
+
+                    if (snapshot.docs.length > 0) {
+                        cursorsRef.current[targetPage] =
+                            snapshot.docs[snapshot.docs.length - 1];
                     }
                 }
 
-                const snapshot = await getDocs(query(collRef, ...constraints));
-                const mapped = snapshot.docs.map((doc) => mapDocument(doc));
+                const mapped = snapshotDocs.map((doc) => mapDocument(doc));
                 setData(mapped);
-
-                if (snapshot.docs.length > 0) {
-                    cursorsRef.current[targetPage] =
-                        snapshot.docs[snapshot.docs.length - 1];
-                }
 
                 currentPageRef.current = targetPage;
                 setPage(targetPage);
+
+                if (targetPage === 0) {
+                    setTotalRecords(totalRecordsRef.current);
+                }
+
+                if (targetPage === 0 || options.rebuildChain) {
+                    setHasStaleData(false);
+                }
             } catch (err) {
                 setError((err as Error).message);
             } finally {
@@ -133,15 +191,38 @@ export function useCollectionSocket<T>(
                     const previousTotal = totalRecordsRef.current;
                     totalRecordsRef.current = newTotal;
 
-                    setTotalRecords(newTotal);
-
                     if (isInitialSnapshot) {
                         isInitialSnapshot = false;
+                        setTotalRecords(newTotal);
                         return;
                     }
 
-                    if (newTotal !== previousTotal && currentPageRef.current === 0) {
-                        fetchPage(0);
+                    if (currentPageRef.current === 0) {
+                        if (newTotal !== previousTotal) {
+                            setTotalRecords(newTotal);
+                            fetchPage(0);
+                        }
+                        return;
+                    }
+
+                    if (newTotal < previousTotal) {
+                        setTotalRecords(newTotal);
+
+                        const nextTotalPages = Math.max(
+                            1,
+                            Math.ceil(newTotal / pageSize)
+                        );
+                        const targetPageIndex = Math.min(
+                            currentPageRef.current,
+                            nextTotalPages - 1
+                        );
+
+                        fetchPage(targetPageIndex, { rebuildChain: true });
+                        return;
+                    }
+
+                    if (newTotal > previousTotal) {
+                        setHasStaleData(true);
                     }
                 },
                 (snapshotError) => {
@@ -155,7 +236,7 @@ export function useCollectionSocket<T>(
         return () => {
             unsubscribe?.();
         };
-    }, [collectionName, fetchPage]);
+    }, [collectionName, fetchPage, pageSize]);
 
     useEffect(() => {
         cursorsRef.current = [];
@@ -181,7 +262,9 @@ export function useCollectionSocket<T>(
     const refresh = useCallback(() => {
         cursorsRef.current = [];
         currentPageRef.current = 0;
-        fetchPage(0);
+        setTotalRecords(totalRecordsRef.current);
+        setHasStaleData(false);
+        fetchPage(0, { rebuildChain: true });
     }, [fetchPage]);
 
     return {
@@ -192,6 +275,7 @@ export function useCollectionSocket<T>(
         pageSize,
         totalRecords,
         totalPages,
+        hasStaleData,
         nextPage,
         prevPage,
         refresh,
