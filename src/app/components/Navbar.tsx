@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { PageSection } from "./PageSection";
 import { GetCertifiedButton } from "./GetCertifiedButton";
 
@@ -14,6 +15,7 @@ const navLinks = [
 export function Navbar() {
     const pathname = usePathname();
     const isHome = pathname === "/";
+    const [isCompact, setIsCompact] = useState(false);
 
     const resolveHref = (href: string) => {
         if (href.startsWith("#") && !isHome) {
@@ -21,6 +23,16 @@ export function Navbar() {
         }
         return href;
     };
+
+    useEffect(() => {
+        const updateCompactMode = () => {
+            setIsCompact(window.innerWidth < 640);
+        };
+
+        updateCompactMode();
+        window.addEventListener("resize", updateCompactMode);
+        return () => window.removeEventListener("resize", updateCompactMode);
+    }, []);
 
     return (
         <header className="sticky top-0 z-20 border-b border-black/5 bg-white/80 backdrop-blur">
@@ -60,7 +72,7 @@ export function Navbar() {
                         Leaderboard
                     </Link>
                     <GetCertifiedButton className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800">
-                        Get certified
+                        {isCompact ? "Certify" : "Get certified"}
                         <span aria-hidden>→</span>
                     </GetCertifiedButton>
                 </div>
