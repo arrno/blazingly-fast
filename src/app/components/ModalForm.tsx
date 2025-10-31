@@ -39,6 +39,9 @@ export function ModalForm() {
     const [error, setError] = useState<string | null>(null);
     const [successRepo, setSuccessRepo] = useState<string | null>(null);
     const [isCompact, setIsCompact] = useState(false);
+    const [copyState, setCopyState] = useState<"idle" | "copied" | "error">(
+        "idle"
+    );
 
     useEffect(() => {
         if (!open) {
@@ -76,8 +79,50 @@ export function ModalForm() {
             return "";
         }
         const encodedRepo = encodeURIComponent(repoSlug);
-        return `![blazingly fast](https://blazingly.fast/api/badge.svg?repo=${encodedRepo})`;
+        return `[![blazingly fast](https://blazingly.fast/api/badge.svg?repo=${encodedRepo})](https://blazingly.fast/hall-of-speed)`;
     }, [repoSlug, status]);
+
+    useEffect(() => {
+        setCopyState("idle");
+    }, [badgeSnippet]);
+
+    useEffect(() => {
+        if (copyState !== "copied") {
+            return;
+        }
+        const timeoutId = window.setTimeout(() => {
+            setCopyState("idle");
+        }, 2000);
+        return () => window.clearTimeout(timeoutId);
+    }, [copyState]);
+
+    const handleCopySnippet = useCallback(async () => {
+        if (!badgeSnippet) {
+            return;
+        }
+        try {
+            if (navigator.clipboard?.writeText) {
+                await navigator.clipboard.writeText(badgeSnippet);
+            } else {
+                const textarea = document.createElement("textarea");
+                textarea.value = badgeSnippet;
+                textarea.setAttribute("readonly", "");
+                textarea.style.position = "absolute";
+                textarea.style.left = "-9999px";
+                document.body.appendChild(textarea);
+                textarea.select();
+                const copied = document.execCommand("copy");
+                document.body.removeChild(textarea);
+                if (!copied) {
+                    throw new Error("Copy command failed");
+                }
+            }
+            setCopyState("copied");
+        } catch (copyError) {
+            console.error("Failed to copy badge snippet", copyError);
+            setCopyState("error");
+        }
+    }, [badgeSnippet]);
 
     const handleSubmit = useCallback(
         async (event: FormEvent<HTMLFormElement>) => {
@@ -147,6 +192,11 @@ export function ModalForm() {
     const submitButtonClass = `inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-8 ${
         isCompact ? "py-3" : "py-4"
     } text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-200 w-full`;
+    const copyButtonClass = `inline-flex items-center gap-1 rounded-md bg-transparent px-2 py-1 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b6b]/30 ${
+        copyState === "copied"
+            ? "text-emerald-600"
+            : "text-gray-500 hover:text-gray-900"
+    }`;
 
     return (
         <Modal open={open} onClose={closeModal} ariaLabel="Certification form">
@@ -266,19 +316,38 @@ export function ModalForm() {
 
                 {badgeSnippet && (
                     <div className="space-y-4 rounded-3xl border border-gray-200 bg-gray-50 p-5">
-                        <div className="space-y-1">
-                            <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                Congratulations 🎉
-                            </p>
-                            <p className="text-sm text-gray-600">
-                                Drop this flex into your README, docs, or merch.
-                            </p>
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div className="space-y-1">
+                                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                                    Congratulations 🎉
+                                </p>
+                                <p className="text-sm text-gray-600">
+                                    Drop this flex into your README, docs, or
+                                    merch.
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleCopySnippet}
+                                className={copyButtonClass}
+                                aria-label="Copy badge snippet"
+                            >
+                                {copyState === "copied" ? "Copied!" : "Copy"}
+                            </button>
                         </div>
-                        <pre className="overflow-x-auto rounded-2xl bg-gray-900 p-4 text-[13px] leading-relaxed text-gray-100">
-                            <code className="block whitespace-pre-wrap break-words font-mono">
-                                {badgeSnippet}
-                            </code>
-                        </pre>
+                        <div className="relative">
+                            <pre className="overflow-x-auto rounded-2xl bg-gray-900 p-4 text-[13px] leading-relaxed text-gray-100">
+                                <code className="block whitespace-pre-wrap break-words font-mono">
+                                    {badgeSnippet}
+                                </code>
+                            </pre>
+                        </div>
+                        {copyState === "error" && (
+                            <p className="text-xs text-red-500">
+                                Copy didn&apos;t work. You can still select and
+                                copy manually.
+                            </p>
+                        )}
                         {successRepo && (
                             <ShareSocial
                                 shareUrl={`https://blazingly.fast/api/badge.svg?repo=${encodeURIComponent(
