@@ -30,25 +30,19 @@ export function Hero() {
             <div className="absolute inset-x-0 -top-20 -z-10 h-96 bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.12),_transparent_55%)]" />
             <PageSection className="relative py-24" id="how-it-works">
                 <div className="mx-auto flex max-w-3xl flex-col items-center gap-10 text-center sm:items-start sm:text-left">
-                    {/* <SplitBadge
-                        leading="Certified"
-                        trailing="Blazingly Fast™"
-                        className="backdrop-blur"
-                    /> */}
-                    <div className="flex gap-2">
-                        <img
-                            src="/fast-badge.svg"
-                            alt="Blazingly fast badge"
-                            className="mt-2"
-                        />
-                        <img
-                            src="/slow-badge.svg"
-                            alt="Blazingly pending badge"
-                            className="mt-2"
-                        />
-                    </div>
-
                     <div className="space-y-6">
+                        <div className="flex gap-2 justify-center sm:justify-start">
+                            <img
+                                src="/fast-badge.svg"
+                                alt="Blazingly fast badge"
+                                className="mt-2"
+                            />
+                            <img
+                                src="/slow-badge.svg"
+                                alt="Blazingly pending badge"
+                                className="mt-2"
+                            />
+                        </div>
                         <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl lg:text-6xl xl:text-7xl">
                             The world’s most rigorous self-certification
                             program.

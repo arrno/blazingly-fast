@@ -1,16 +1,40 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const geistSans = Geist({
+const geistSans = localFont({
     variable: "--font-geist-sans",
-    subsets: ["latin"],
+    display: "swap",
+    src: [
+        {
+            path: "../../public/fonts/geist/Geist[wght].woff2",
+            weight: "100 900",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/geist/Geist-Italic[wght].woff2",
+            weight: "100 900",
+            style: "italic",
+        },
+    ],
 });
 
-const geistMono = Geist_Mono({
+const geistMono = localFont({
     variable: "--font-geist-mono",
-    subsets: ["latin"],
+    display: "swap",
+    src: [
+        {
+            path: "../../public/fonts/geist-mono/GeistMono[wght].woff2",
+            weight: "100 900",
+            style: "normal",
+        },
+        {
+            path: "../../public/fonts/geist-mono/GeistMono-Italic[wght].woff2",
+            weight: "100 900",
+            style: "italic",
+        },
+    ],
 });
 
 const siteUrl = "https://blazingly.fast";
