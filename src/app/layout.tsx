@@ -70,6 +70,8 @@ export const metadata: Metadata = {
             {
                 url: socialImage,
                 alt: "Certified Blazingly Fast badge",
+                width: 1200,
+                height: 630,
             },
         ],
     },
@@ -78,7 +80,14 @@ export const metadata: Metadata = {
         title: "blazingly.fast — Certified Blazingly Fast™",
         description:
             "Submit your repo, tick yes, collect the Certified Blazingly Fast™ badge.",
-        images: [socialImage],
+        images: [
+            {
+                url: socialImage,
+                alt: "Certified Blazingly Fast badge",
+                width: 1200,
+                height: 630,
+            },
+        ],
     },
     robots: {
         index: true,

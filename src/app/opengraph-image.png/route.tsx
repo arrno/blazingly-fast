@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
 
+export const runtime = "edge";
+
 export function GET() {
     return new ImageResponse(
         (
@@ -30,7 +32,7 @@ export function GET() {
                         gap: 18,
                     }}
                 >
-                    <span style={{ color: "#F8FAFC" }}>blazingly.fast</span>
+                    <span style={{ color: "#F8FAFC" }}>🔥 blazingly.fast</span>
                 </div>
 
                 <div
