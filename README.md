@@ -49,8 +49,8 @@ Every submission joins the Hall of Speed. These are just the first few.
 
 | Project           | Stars    | Certification     |
 | ----------------- | -------- | ----------------- |
-| pipevine          | ⭐⭐⭐   | ✅ blazingly fast |
-| rowboat           | ⭐⭐⭐⭐ | ✅ blazingly fast |
+| tokio             | ⭐⭐⭐   | ✅ blazingly fast |
+| polars            | ⭐⭐⭐⭐ | ✅ blazingly fast |
 | your project here | 💫       | ☐ pending honesty |
 
 See the full leaderboard -> https://blazingly.fast/hall-of-speed

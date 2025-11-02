@@ -1,9 +1,9 @@
 import { PageSection } from "./PageSection";
 
 const projects = [
-    { name: "pipevine", stars: "⭐⭐⭐", certification: "✅ blazingly fast" },
+    { name: "tokio", stars: "⭐⭐⭐", certification: "✅ blazingly fast" },
     {
-        name: "rowboat",
+        name: "polars",
         stars: "⭐⭐⭐⭐",
         certification: "✅ blazingly fast",
     },
