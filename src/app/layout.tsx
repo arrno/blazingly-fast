@@ -38,6 +38,7 @@ const geistMono = localFont({
 });
 
 const siteUrl = "https://blazingly.fast";
+const socialImage = "/opengraph-image.png";
 
 export const metadata: Metadata = {
     metadataBase: new URL(siteUrl),
@@ -67,7 +68,7 @@ export const metadata: Metadata = {
         type: "website",
         images: [
             {
-                url: "/fast-badge.svg",
+                url: socialImage,
                 alt: "Certified Blazingly Fast badge",
             },
         ],
@@ -77,7 +78,7 @@ export const metadata: Metadata = {
         title: "blazingly.fast — Certified Blazingly Fast™",
         description:
             "Submit your repo, tick yes, collect the Certified Blazingly Fast™ badge.",
-        images: ["/fast-badge.svg"],
+        images: [socialImage],
     },
     robots: {
         index: true,

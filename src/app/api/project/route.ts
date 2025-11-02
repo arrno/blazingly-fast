@@ -31,7 +31,8 @@ function sanitizeSubmission(payload: unknown): SubmissionForm | null {
         return null;
     }
 
-    const { repoUrl, isBlazinglyFast, blurb } = payload as SubmissionForm;
+    const { repoUrl, isBlazinglyFast, blurb, hidden } =
+        payload as SubmissionForm;
 
     if (typeof repoUrl !== "string" || typeof blurb !== "string") {
         return null;
@@ -45,6 +46,7 @@ function sanitizeSubmission(payload: unknown): SubmissionForm | null {
         repoUrl,
         isBlazinglyFast,
         blurb,
+        hidden,
     };
 }
 
@@ -128,6 +130,7 @@ export async function POST(request: NextRequest) {
             certifiedOn: formatCertifiedOn(now),
             blurb: submission.blurb.trim(),
             exists: true,
+            hidden: submission.hidden,
             status: submission.isBlazinglyFast ? Status.Fast : Status.Pending,
         };
 

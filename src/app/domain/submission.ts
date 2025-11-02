@@ -2,6 +2,7 @@ export type SubmissionForm = {
     repoUrl: string;
     isBlazinglyFast: boolean;
     blurb: string;
+    hidden: boolean;
 };
 
 const GITHUB_REPO_REGEX =

@@ -153,6 +153,7 @@ export function ModalForm() {
                         repoUrl: toGithubUrl(repoSlug),
                         isBlazinglyFast: isFast === "yes",
                         blurb: trimmedBlurb,
+                        hidden: false,
                     }),
                 });
 
