@@ -1,6 +1,6 @@
 # Blazingly.fast
 
-![Certified Blazingly Fast badge](./public/fast-badge.svg)
+[![blazingly fast](https://blazingly.fast/api/badge.svg?repo=arrno%2Fblazingly-fast)](https://blazingly.fast)
 
 ## The world's most rigorous self-certification program.
 
