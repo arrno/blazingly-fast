@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type JSX } from "react";
+import * as Tooltip from "@radix-ui/react-tooltip";
 import Link from "next/link";
 import { Project, Status } from "../domain/projects";
 import { useCollectionSocket as useCollection } from "../hooks/useCollectionSocket";
@@ -215,12 +216,15 @@ export function ProjectTable(): JSX.Element {
                             </th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
-                        {projects.map((project, index) => {
-                            const isPlaceholder = !project.exists;
-                            const statusMeta = project.status
-                                ? STATUS_META[project.status]
-                                : undefined;
+                    <Tooltip.Provider delayDuration={120} skipDelayDuration={0}>
+                        <tbody className="divide-y divide-gray-100">
+                            {projects.map((project, index) => {
+                                const isPlaceholder = !project.exists;
+                                const statusMeta = project.status
+                                    ? STATUS_META[project.status]
+                                    : undefined;
+                                const trimmedBlurb = project.blurb.trim();
+                                const hasBlurb = trimmedBlurb.length > 0;
 
                             return (
                                 <tr
@@ -276,18 +280,30 @@ export function ProjectTable(): JSX.Element {
                                             project.certifiedOn
                                         )}
                                     </td>
-                                    <td
-                                        className="px-4 py-3 text-gray-600 sm:px-6 sm:py-4"
-                                        title={
-                                            !isPlaceholder && project.blurb
-                                                ? project.blurb
-                                                : undefined
-                                        }
-                                    >
+                                    <td className="px-4 py-3 text-gray-600 sm:px-6 sm:py-4">
                                         {isPlaceholder ? (
                                             <span className="text-gray-300">
                                                 —
                                             </span>
+                                        ) : hasBlurb ? (
+                                            <Tooltip.Root>
+                                                <Tooltip.Trigger asChild>
+                                                    <span className="line-clamp-2 cursor-help sm:line-clamp-none">
+                                                        {project.blurb}
+                                                    </span>
+                                                </Tooltip.Trigger>
+                                                <Tooltip.Portal>
+                                                    <Tooltip.Content
+                                                        className="max-w-xs rounded-md bg-gray-900 px-3 py-2 text-xs text-white shadow-lg"
+                                                        side="top"
+                                                        align="start"
+                                                        sideOffset={6}
+                                                    >
+                                                        {trimmedBlurb}
+                                                        <Tooltip.Arrow className="fill-gray-900" />
+                                                    </Tooltip.Content>
+                                                </Tooltip.Portal>
+                                            </Tooltip.Root>
                                         ) : (
                                             <span className="line-clamp-2 sm:line-clamp-none">
                                                 {project.blurb}
@@ -309,8 +325,9 @@ export function ProjectTable(): JSX.Element {
                                     </td>
                                 </tr>
                             );
-                        })}
-                    </tbody>
+                            })}
+                        </tbody>
+                    </Tooltip.Provider>
                 </table>
             </div>
             <div className="flex items-center justify-between gap-6 border-t border-gray-100 bg-gray-50 px-6 py-3 text-xs text-gray-500">
