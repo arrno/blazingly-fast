@@ -11,9 +11,14 @@ import {
     orderBy,
     query,
     startAfter,
+    where,
+} from "firebase/firestore";
+import type {
     QueryOrderByConstraint,
     QueryLimitConstraint,
     QueryStartAtConstraint,
+    QueryFieldFilterConstraint,
+    WhereFilterOp,
 } from "firebase/firestore";
 import { getClientFirestore } from "@/lib/firebase/client";
 
@@ -22,6 +27,13 @@ export type UseCollectionOptions<T> = {
     orderByField?: string;
     orderDirection?: "asc" | "desc";
     mapDocument: (doc: QueryDocumentSnapshot) => T;
+    filters?: FirestoreFilter[];
+};
+
+export type FirestoreFilter = {
+    fieldPath: string;
+    opStr: WhereFilterOp;
+    value: unknown;
 };
 
 type UseCollectionState<T> = {
@@ -45,6 +57,39 @@ export function useCollection<T>(
     const orderByField = options.orderByField ?? documentId();
     const orderDirection = options.orderDirection ?? "asc";
     const mapDocument = options.mapDocument;
+    const filterStateRef = useRef<{
+        key: string;
+        constraints: QueryFieldFilterConstraint[];
+    }>({
+        key: "[]",
+        constraints: [],
+    });
+    const filtersKey =
+        options.filters && options.filters.length > 0
+            ? JSON.stringify(
+                  options.filters.map(({ fieldPath, opStr, value }) => ({
+                      fieldPath,
+                      opStr,
+                      value,
+                  }))
+              )
+            : "[]";
+    if (filtersKey !== filterStateRef.current.key) {
+        if (!options.filters || options.filters.length === 0) {
+            filterStateRef.current = {
+                key: "[]",
+                constraints: [],
+            };
+        } else {
+            filterStateRef.current = {
+                key: filtersKey,
+                constraints: options.filters.map(({ fieldPath, opStr, value }) =>
+                    where(fieldPath, opStr, value)
+                ),
+            };
+        }
+    }
+    const filterConstraints = filterStateRef.current.constraints;
     const cursorsRef = useRef<QueryDocumentSnapshot[]>([]);
 
     const [data, setData] = useState<T[]>([]);
@@ -69,12 +114,13 @@ export function useCollection<T>(
 
         try {
             const collRef = collection(firestore, collectionName);
-            const countSnapshot = await getCountFromServer(collRef);
+            const countQuery = query(collRef, ...filterConstraints);
+            const countSnapshot = await getCountFromServer(countQuery);
             setTotalRecords(countSnapshot.data().count);
         } catch (err) {
             setError((err as Error).message);
         }
-    }, [collectionName]);
+    }, [collectionName, filterConstraints]);
 
     const fetchPage = useCallback(
         async (targetPage: number) => {
@@ -93,7 +139,12 @@ export function useCollection<T>(
                     | QueryOrderByConstraint
                     | QueryLimitConstraint
                     | QueryStartAtConstraint
-                > = [orderBy(orderByField, orderDirection), limit(pageSize)];
+                    | QueryFieldFilterConstraint
+                > = [
+                    ...filterConstraints,
+                    orderBy(orderByField, orderDirection),
+                    limit(pageSize),
+                ];
 
                 if (targetPage > 0) {
                     const priorCursor = cursorsRef.current[targetPage - 1];
@@ -118,7 +169,14 @@ export function useCollection<T>(
                 setLoading(false);
             }
         },
-        [collectionName, mapDocument, orderByField, orderDirection, pageSize]
+        [
+            collectionName,
+            filterConstraints,
+            mapDocument,
+            orderByField,
+            orderDirection,
+            pageSize,
+        ]
     );
 
     useEffect(() => {

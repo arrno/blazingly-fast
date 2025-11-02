@@ -55,6 +55,7 @@ const seed = async () => {
             name: `Project ${i}`,
             repository: "github.com/arrno/gliter",
             status: Status.Fast,
+            hidden: false,
         };
 
         const now = new Date();

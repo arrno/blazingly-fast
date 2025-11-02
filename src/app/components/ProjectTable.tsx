@@ -15,6 +15,7 @@ type FirestoreProject = {
     blurb?: string;
     exists?: boolean;
     status?: Status;
+    hidden?: boolean;
 };
 
 const ROW_TARGET = 10;
@@ -65,6 +66,7 @@ function mapProjectDocument(doc: QueryDocumentSnapshot): Project {
         blurb: data.blurb ?? "",
         exists: data.exists ?? true,
         status,
+        hidden: data.hidden ?? false,
     };
 }
 
@@ -134,6 +136,13 @@ export function ProjectTable(): JSX.Element {
         orderByField: "certifiedDate",
         orderDirection: "desc",
         pageSize: ROW_TARGET,
+        filters: [
+            {
+                fieldPath: "hidden",
+                opStr: "!=",
+                value: true,
+            },
+        ],
     });
 
     useEffect(() => {

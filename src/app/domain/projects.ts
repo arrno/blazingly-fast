@@ -16,6 +16,7 @@ export type Project = {
     blurb: string;
     exists: boolean;
     status: Status;
+    hidden?: boolean;
 };
 
 export function supplementProject(

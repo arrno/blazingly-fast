@@ -1,42 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blazingly.fast
 
-## Badges
+![Certified Blazingly Fast badge](./public/fast-badge.svg)
 
-![Example Badge](./public/example.svg)
-![Fast Badge](./public/fast-badge.svg)
-![Slow Badge](./public/slow-badge.svg)
+## The world's most rigorous self-certification program.
 
-## Getting Started
+Every project claims to be **blazingly fast**. We believe you. Submit your repo, tick "Yes", and join the official Hall of Speed with the badge that makes everything appear _12% faster_.
 
-First, run the development server:
+-   [Submit your repo](#ready-to-self-certify)
+-   [Browse the Hall of Speed](https://blazingly.fast/hall-of-speed)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## How It Works
+
+1. **Step 1 - Paste your repo URL.** Drop in the GitHub link you already brag about in the README.
+2. **Step 2 - Answer truthfully.** Check the only box that matters. Honesty counts, winks are optional.
+3. **Step 3 - Collect your badge.** Embed the Certified Blazingly Fast™ badge anywhere pixels are accepted.
+
+_Statistically significant in vibes, not in benchmarks._
+
+## Live Preview
+
+The certification form gives you a badge-ready snippet the moment you submit.
+
+Repo URL  
+`https://github.com/you/yourproject`
+
+Is your project blazingly fast?
+
+-   [ ] No
+-   [x] Yes
+
+Once you check the box, copy the embed:
+
+```md
+![blazingly fast](https://blazingly.fast/api/badge.svg?repo=you/yourproject)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Add it to your README, docs, launch posts-anywhere you want to radiate confidence.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Why This Exists
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Because performance claims deserve recognition. Because badges are forever. Because we could.
 
-## Learn More
+Certified Blazingly Fast™ is the antidote to unverified speed claims. We celebrate optimism, highlight ambition, and hand out badges to anyone bold enough to say their project absolutely rips.
 
-To learn more about Next.js, take a look at the following resources:
+## Hall of Speed (Preview)
 
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Every submission joins the Hall of Speed. These are just the first few.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Project           | Stars    | Certification     |
+| ----------------- | -------- | ----------------- |
+| pipevine          | ⭐⭐⭐   | ✅ blazingly fast |
+| rowboat           | ⭐⭐⭐⭐ | ✅ blazingly fast |
+| your project here | 💫       | ☐ pending honesty |
 
-## Deploy on Vercel
+See the full leaderboard -> https://blazingly.fast/hall-of-speed
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## FAQ
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Do you verify the speed?**  
+No. We believe in trust and optimism.
+
+**What if my project isn't fast?**  
+Then make it blazingly fast and re-apply.
+
+**Is there a badge for that?**  
+Coming soon: actually.blazingly.fast.
+
+## Ready to Self-Certify?
+
+Certified Blazingly Fast is a self-reported performance standard. We celebrate ambition, encourage optimism, and remind the world that benchmarks aren't the only metric that matters.
+
+No benchmarks were harmed in the making of this site.
+
+Submit your repo, check the box, and claim your place in the Hall of Speed.
+
+[Get certified](https://blazingly.fast)
+
+---
+
+© 2025 blazingly.fast - run responsibly. Powered entirely by trust and good vibes.

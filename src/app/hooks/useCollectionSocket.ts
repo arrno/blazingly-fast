@@ -12,17 +12,23 @@ import {
     orderBy,
     query,
     startAfter,
+    where,
+} from "firebase/firestore";
+import type {
     QueryOrderByConstraint,
     QueryLimitConstraint,
     QueryStartAtConstraint,
+    QueryFieldFilterConstraint,
 } from "firebase/firestore";
 import { getClientFirestore } from "@/lib/firebase/client";
+import type { FirestoreFilter } from "./useCollection";
 
 export type UseCollectionSocketOptions<T> = {
     pageSize?: number;
     orderByField?: string;
     orderDirection?: "asc" | "desc";
     mapDocument: (doc: QueryDocumentSnapshot) => T;
+    filters?: FirestoreFilter[];
 };
 
 type UseCollectionSocketState<T> = {
@@ -51,6 +57,39 @@ export function useCollectionSocket<T>(
     const orderByField = options.orderByField ?? documentId();
     const orderDirection = options.orderDirection ?? "asc";
     const mapDocument = options.mapDocument;
+    const filterStateRef = useRef<{
+        key: string;
+        constraints: QueryFieldFilterConstraint[];
+    }>({
+        key: "[]",
+        constraints: [],
+    });
+    const filtersKey =
+        options.filters && options.filters.length > 0
+            ? JSON.stringify(
+                  options.filters.map(({ fieldPath, opStr, value }) => ({
+                      fieldPath,
+                      opStr,
+                      value,
+                  }))
+              )
+            : "[]";
+    if (filtersKey !== filterStateRef.current.key) {
+        if (!options.filters || options.filters.length === 0) {
+            filterStateRef.current = {
+                key: "[]",
+                constraints: [],
+            };
+        } else {
+            filterStateRef.current = {
+                key: filtersKey,
+                constraints: options.filters.map(({ fieldPath, opStr, value }) =>
+                    where(fieldPath, opStr, value)
+                ),
+            };
+        }
+    }
+    const filterConstraints = filterStateRef.current.constraints;
     const cursorsRef = useRef<Array<QueryDocumentSnapshot | undefined>>([]);
     const currentPageRef = useRef(0);
     const totalRecordsRef = useRef(0);
@@ -99,7 +138,9 @@ export function useCollectionSocket<T>(
                             | QueryOrderByConstraint
                             | QueryLimitConstraint
                             | QueryStartAtConstraint
+                            | QueryFieldFilterConstraint
                         > = [
+                            ...filterConstraints,
                             orderBy(orderByField, orderDirection),
                             limit(pageSize),
                         ];
@@ -131,7 +172,9 @@ export function useCollectionSocket<T>(
                         | QueryOrderByConstraint
                         | QueryLimitConstraint
                         | QueryStartAtConstraint
+                        | QueryFieldFilterConstraint
                     > = [
+                        ...filterConstraints,
                         orderBy(orderByField, orderDirection),
                         limit(pageSize),
                     ];
@@ -178,7 +221,14 @@ export function useCollectionSocket<T>(
                 setLoading(false);
             }
         },
-        [collectionName, mapDocument, orderByField, orderDirection, pageSize]
+        [
+            collectionName,
+            filterConstraints,
+            mapDocument,
+            orderByField,
+            orderDirection,
+            pageSize,
+        ]
     );
 
     useEffect(() => {
@@ -194,7 +244,7 @@ export function useCollectionSocket<T>(
 
         try {
             unsubscribe = onSnapshot(
-                collRef,
+                query(collRef, ...filterConstraints),
                 (snapshot) => {
                     const newTotal = snapshot.size;
                     const previousTotal = totalRecordsRef.current;
@@ -245,7 +295,7 @@ export function useCollectionSocket<T>(
         return () => {
             unsubscribe?.();
         };
-    }, [collectionName, fetchPage, pageSize]);
+    }, [collectionName, fetchPage, filterConstraints, pageSize]);
 
     useEffect(() => {
         cursorsRef.current = [];
