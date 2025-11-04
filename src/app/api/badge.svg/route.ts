@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import crypto from "node:crypto";
+import { getRedis } from "@/lib/redis/client";
 import { getServerFirestore } from "@/lib/firebase/server";
 import { Status, projectIdFromRepo } from "@/app/domain/projects";
 import { extract_repo_from_url } from "@/app/domain/submission";
 
 export const dynamic = "force-dynamic";
+
+// Positive cache TTL only (no negative caching)
+const POS_TTL = 60 * 60 * 12; // 12h
 
 const STATUS_TO_BADGE: Record<Status, string> = {
     [Status.Fast]: "fast-badge.svg",
@@ -16,14 +21,9 @@ const STATUS_TO_BADGE: Record<Status, string> = {
 function parseRepoParam(
     rawRepo: string | null
 ): { owner: string; repo: string } | null {
-    if (!rawRepo) {
-        return null;
-    }
-
+    if (!rawRepo) return null;
     const trimmed = rawRepo.trim();
-    if (!trimmed) {
-        return null;
-    }
+    if (!trimmed) return null;
 
     const directMatch = trimmed.match(
         /^(?<owner>[A-Za-z0-9_.-]+)\/(?<repo>[A-Za-z0-9_.-]+)$/
@@ -34,43 +34,115 @@ function parseRepoParam(
             repo: directMatch.groups.repo,
         };
     }
-
     return extract_repo_from_url(trimmed);
 }
 
+// Memoize SVG bytes in-process to avoid fs on hot paths
+const badgeCacheMem: Partial<Record<Status, string>> = {};
 async function loadBadge(status: Status): Promise<string> {
+    const cached = badgeCacheMem[status];
+    if (cached) return cached;
     const fileName = STATUS_TO_BADGE[status];
     const filePath = path.join(process.cwd(), "public", fileName);
-    const file = await readFile(filePath, "utf-8");
-    return file;
+    const svg = await readFile(filePath, "utf-8");
+    badgeCacheMem[status] = svg;
+    return svg;
+}
+
+function etagFor(svg: string) {
+    const h = crypto.createHash("sha1").update(svg).digest("hex");
+    return `W/"${h}"`;
+}
+
+function hitHeaders200FromTag(etag: string) {
+    return {
+        "Content-Type": "image/svg+xml; charset=utf-8",
+        "Cache-Control":
+            "public, max-age=0, s-maxage=86400, stale-while-revalidate=2592000",
+        "X-Content-Type-Options": "nosniff",
+        ETag: etag,
+    };
+}
+function hitHeaders304FromTag(etag: string) {
+    return {
+        "Cache-Control":
+            "public, max-age=0, s-maxage=86400, stale-while-revalidate=2592000",
+        ETag: etag,
+    };
+}
+
+// 404 SHOULD NOT be cached, so misses flip to hits immediately later.
+const missHeaders = {
+    "Cache-Control": "no-store, max-age=0, s-maxage=0",
+};
+
+function kvKey(owner: string, repo: string, v?: string | null) {
+    return `badge:${owner.toLowerCase()}:${repo.toLowerCase()}:${v ?? "0"}`;
+}
+
+function matchesIfNoneMatch(req: NextRequest, etag: string) {
+    const inm = req.headers.get("if-none-match");
+    if (!inm) return false;
+    return inm
+        .split(",")
+        .map((s) => s.trim())
+        .includes(etag);
 }
 
 export async function GET(request: NextRequest) {
     const repoParam = request.nextUrl.searchParams.get("repo");
+    const versionParam = request.nextUrl.searchParams.get("v"); // optional bust param
     const repoInfo = parseRepoParam(repoParam);
 
     if (!repoInfo) {
         return NextResponse.json(
             { error: "Missing or invalid repository parameter" },
-            { status: 400 }
+            { status: 400, headers: missHeaders }
         );
     }
 
+    const { owner, repo } = repoInfo;
+    const key = kvKey(owner, repo, versionParam);
+    const kv = await getRedis();
+
+    // 1) Positive cache check (KV)
+    let cached: string | null = null;
+    try {
+        cached = await kv.get(key);
+    } catch {
+        /* ignore */
+    }
+    if (cached) {
+        const etag = etagFor(cached);
+        if (matchesIfNoneMatch(request, etag)) {
+            return new NextResponse(null, {
+                status: 304,
+                headers: hitHeaders304FromTag(etag),
+            });
+        }
+        return new NextResponse(cached, {
+            status: 200,
+            headers: hitHeaders200FromTag(etag),
+        });
+    }
+
+    // 2) Slow path: Firestore once; only write positives to KV
     const firestore = getServerFirestore();
     if (!firestore) {
         return NextResponse.json(
             { error: "Server firestore configuration missing" },
-            { status: 500 }
+            { status: 500, headers: missHeaders }
         );
     }
 
-    const docId = projectIdFromRepo(repoInfo.owner, repoInfo.repo);
+    const docId = projectIdFromRepo(owner, repo);
     const docSnapshot = await firestore.collection("projects").doc(docId).get();
 
     if (!docSnapshot.exists) {
+        // No negative cache: return 404 with no-store so a later hit turns fast immediately.
         return NextResponse.json(
             { error: "Project not found" },
-            { status: 404 }
+            { status: 404, headers: missHeaders }
         );
     }
 
@@ -85,17 +157,34 @@ export async function GET(request: NextRequest) {
 
     try {
         const svg = await loadBadge(status);
+
+        // Write ONLY positive hits to KV
+        try {
+            await kv.set(key, svg, { EX: POS_TTL });
+        } catch {
+            /* ignore */
+        }
+
+        const etag = etagFor(svg);
+        if (matchesIfNoneMatch(request, etag)) {
+            return new NextResponse(null, {
+                status: 304,
+                headers: hitHeaders304FromTag(etag),
+            });
+        }
         return new NextResponse(svg, {
             status: 200,
-            headers: {
-                "Content-Type": "image/svg+xml",
-                "Cache-Control": "public, max-age=3600",
-            },
+            headers: hitHeaders200FromTag(etag),
         });
     } catch {
         return NextResponse.json(
             { error: "Unable to load badge asset" },
-            { status: 500 }
+            { status: 500, headers: missHeaders }
         );
     }
+}
+
+export async function HEAD(request: NextRequest) {
+    const res = await GET(request);
+    return new NextResponse(null, { status: res.status, headers: res.headers });
 }
