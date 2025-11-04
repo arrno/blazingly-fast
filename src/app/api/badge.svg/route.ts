@@ -37,16 +37,27 @@ function parseRepoParam(
     return extract_repo_from_url(trimmed);
 }
 
-// Memoize SVG bytes in-process to avoid fs on hot paths
-const badgeCacheMem: Partial<Record<Status, string>> = {};
+const BADGE_SVGS: Partial<Record<Status, string>> = {};
+(async () => {
+    for (const [status, file] of Object.entries(STATUS_TO_BADGE) as [
+        Status,
+        string
+    ][]) {
+        BADGE_SVGS[status] = await readFile(
+            path.join(process.cwd(), "public", file),
+            "utf-8"
+        );
+    }
+})();
+
 async function loadBadge(status: Status): Promise<string> {
-    const cached = badgeCacheMem[status];
-    if (cached) return cached;
-    const fileName = STATUS_TO_BADGE[status];
-    const filePath = path.join(process.cwd(), "public", fileName);
-    const svg = await readFile(filePath, "utf-8");
-    badgeCacheMem[status] = svg;
-    return svg;
+    const s = BADGE_SVGS[status];
+    if (s) return s;
+    // rare fallback if the preload hasn’t finished yet
+    return readFile(
+        path.join(process.cwd(), "public", STATUS_TO_BADGE[status]),
+        "utf-8"
+    );
 }
 
 function etagFor(svg: string) {
@@ -107,11 +118,15 @@ export async function GET(request: NextRequest) {
 
     // 1) Positive cache check (KV)
     let cached: string | null = null;
-    try {
-        cached = await kv.get(key);
-    } catch {
-        /* ignore */
+
+    if (kv) {
+        try {
+            cached = await kv.get(key);
+        } catch (err) {
+            console.log(`failed to read cache. Err: ${err}`);
+        }
     }
+
     if (cached) {
         const etag = etagFor(cached);
         if (matchesIfNoneMatch(request, etag)) {
@@ -159,10 +174,12 @@ export async function GET(request: NextRequest) {
         const svg = await loadBadge(status);
 
         // Write ONLY positive hits to KV
-        try {
-            await kv.set(key, svg, { EX: POS_TTL });
-        } catch {
-            /* ignore */
+        if (kv) {
+            try {
+                await kv.set(key, svg, { EX: POS_TTL });
+            } catch (err) {
+                console.log(`failed to write cache. Err: ${err}`);
+            }
         }
 
         const etag = etagFor(svg);
