@@ -49,7 +49,7 @@ export function Hero() {
                         </h1>
                         <p className="text-lg leading-relaxed text-gray-600">
                             Every project claims to be{" "}
-                            <strong>blazingly fast</strong>. We believe you.
+                            <strong>blazingly fast</strong>. We believe it.
                             Submit your repo, tick &quot;Yes&quot;, and join the
                             official Hall of Speed with the badge that makes
                             everything appear <em>12% faster</em>.
