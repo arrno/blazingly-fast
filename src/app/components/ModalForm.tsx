@@ -79,7 +79,7 @@ export function ModalForm() {
             return "";
         }
         const encodedRepo = encodeURIComponent(repoSlug);
-        return `[![blazingly fast](https://blazingly.fast/api/badge.svg?repo=${encodedRepo})](https://blazingly.fast/hall-of-speed)`;
+        return `[![blazingly fast](https://blazingly.fast/api/badge.svg?repo=${encodedRepo})](https://blazingly.fast)`;
     }, [repoSlug, status]);
 
     useEffect(() => {

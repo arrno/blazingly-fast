@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { Providers } from "./providers";
@@ -93,11 +94,14 @@ export const metadata: Metadata = {
         index: true,
         follow: true,
     },
-    themeColor: "#ffffff",
     appleWebApp: {
         title: "blazingly.fast",
         statusBarStyle: "default",
     },
+};
+
+export const viewport: Viewport = {
+    themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -109,9 +113,11 @@ export default function RootLayout({
         <html
             lang="en"
             className={`${geistSans.variable} ${geistMono.variable}`}
+            data-scroll-behavior="smooth"
         >
             <body className="bg-white text-gray-900 antialiased">
                 <Providers>{children}</Providers>
+                <Analytics />
             </body>
         </html>
     );
