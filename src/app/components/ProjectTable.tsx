@@ -110,15 +110,99 @@ function padProjects(projects: Project[]): Project[] {
 }
 
 function normalizeRepository(repository: string): string {
-    if (!repository) {
+    const trimmed = repository.trim();
+
+    if (!trimmed) {
         return "";
     }
 
-    if (repository.startsWith("http")) {
-        return repository;
+    if (trimmed.startsWith("http")) {
+        return trimmed;
     }
 
-    return `https://${repository}`;
+    return `https://${trimmed}`;
+}
+
+type RepositoryDisplay = {
+    full: string;
+    owner?: string;
+    name: string;
+};
+
+function getRepositoryDisplay(
+    repository: string,
+    fallbackName?: string
+): RepositoryDisplay | null {
+    const trimmed = repository.trim();
+    const fallback = fallbackName?.trim();
+
+    if (!trimmed) {
+        if (!fallback) {
+            return null;
+        }
+
+        return {
+            full: fallback,
+            name: fallback,
+        };
+    }
+
+    const ensureProtocol = trimmed.startsWith("http")
+        ? trimmed
+        : `https://${trimmed}`;
+
+    const normalizeRepo = (value: string): RepositoryDisplay | null => {
+        const segments = value.split("/").filter(Boolean);
+
+        if (segments.length >= 2) {
+            const owner = segments[segments.length - 2];
+            const repo = segments[segments.length - 1].replace(/\.git$/, "");
+            return {
+                full: `${owner}/${repo}`,
+                owner,
+                name: repo,
+            };
+        }
+
+        if (segments.length === 1) {
+            const repo = segments[0].replace(/\.git$/, "");
+            return {
+                full: repo,
+                name: repo,
+            };
+        }
+
+        if (fallback) {
+            return {
+                full: fallback,
+                name: fallback,
+            };
+        }
+
+        return null;
+    };
+
+    try {
+        const url = new URL(ensureProtocol);
+        const display = normalizeRepo(url.pathname);
+
+        if (display) {
+            return display;
+        }
+
+        return {
+            full: url.hostname,
+            name: url.hostname,
+        };
+    } catch {
+        const display = normalizeRepo(trimmed);
+
+        if (display) {
+            return display;
+        }
+
+        return null;
+    }
 }
 
 export function ProjectTable(): JSX.Element {
@@ -180,25 +264,13 @@ export function ProjectTable(): JSX.Element {
                         <tr>
                             <th
                                 scope="col"
-                                className="px-4 py-4 sm:px-6 sm:py-5"
-                            >
-                                Project
-                            </th>
-                            <th
-                                scope="col"
-                                className="hidden px-4 py-4 sm:px-6 sm:py-5 md:table-cell"
-                            >
-                                Maintainer
-                            </th>
-                            <th
-                                scope="col"
-                                className="hidden px-4 py-4 sm:px-6 sm:py-5 md:table-cell"
+                                className="min-w-[96px] px-3 py-4 sm:min-w-[180px] sm:px-6 sm:py-5"
                             >
                                 Repository
                             </th>
                             <th
                                 scope="col"
-                                className="min-w-[140px] px-4 py-4 sm:px-6 sm:py-5"
+                                className="min-w-[88px] px-3 py-4 sm:min-w-[140px] sm:px-6 sm:py-5"
                             >
                                 Certified On
                             </th>
@@ -225,106 +297,173 @@ export function ProjectTable(): JSX.Element {
                                     : undefined;
                                 const trimmedBlurb = project.blurb.trim();
                                 const hasBlurb = trimmedBlurb.length > 0;
+                                const repositoryUrl = normalizeRepository(
+                                    project.repository
+                                );
+                                const repositoryDisplay = getRepositoryDisplay(
+                                    project.repository,
+                                    project.name
+                                );
+                                const rowIsInteractive =
+                                    !isPlaceholder && repositoryUrl.length > 0;
 
-                            return (
-                                <tr
-                                    key={`${
-                                        project.repository ||
-                                        project.name ||
-                                        "placeholder"
-                                    }-${index}`}
-                                    className="transition hover:bg-gray-50/80"
-                                >
-                                    <th
-                                        scope="row"
-                                        className="px-4 py-3 text-left font-semibold text-gray-900 sm:px-6 sm:py-4"
+                                return (
+                                    <tr
+                                        key={`${
+                                            project.repository ||
+                                            project.name ||
+                                            "placeholder"
+                                        }-${index}`}
+                                        className={`transition hover:bg-gray-50/80 ${
+                                            rowIsInteractive
+                                                ? "cursor-pointer focus-within:bg-gray-50/80"
+                                                : ""
+                                        }`}
+                                        onClick={
+                                            rowIsInteractive
+                                                ? (event) => {
+                                                      const target =
+                                                          event.target;
+                                                      if (
+                                                          target instanceof
+                                                              HTMLElement &&
+                                                          target.closest(
+                                                              "a, button"
+                                                          )
+                                                      ) {
+                                                          return;
+                                                      }
+                                                      const anchor =
+                                                          event.currentTarget.querySelector<HTMLAnchorElement>(
+                                                              '[data-row-link="true"]'
+                                                          );
+                                                      anchor?.click();
+                                                  }
+                                                : undefined
+                                        }
+                                        onKeyDown={
+                                            rowIsInteractive
+                                                ? (event) => {
+                                                      if (
+                                                          event.key ===
+                                                              "Enter" ||
+                                                          event.key === " "
+                                                      ) {
+                                                          event.preventDefault();
+                                                          const anchor =
+                                                              event.currentTarget.querySelector<HTMLAnchorElement>(
+                                                                  '[data-row-link="true"]'
+                                                              );
+                                                          anchor?.click();
+                                                      }
+                                                  }
+                                                : undefined
+                                        }
+                                        role={
+                                            rowIsInteractive
+                                                ? "link"
+                                                : undefined
+                                        }
+                                        tabIndex={rowIsInteractive ? 0 : -1}
                                     >
-                                        {isPlaceholder ? (
-                                            <span className="text-gray-300">
-                                                —
-                                            </span>
-                                        ) : (
-                                            project.name
-                                        )}
-                                    </th>
-                                    <td className="hidden px-4 py-3 text-gray-600 sm:px-6 sm:py-4 md:table-cell">
-                                        {isPlaceholder ? (
-                                            <span className="text-gray-300">
-                                                —
-                                            </span>
-                                        ) : (
-                                            project.maintainer
-                                        )}
-                                    </td>
-                                    <td className="hidden break-words px-4 py-3 font-mono text-[0.65rem] text-gray-500 sm:px-6 sm:py-4 sm:text-xs md:table-cell">
-                                        {isPlaceholder ? (
-                                            <span className="text-gray-300">
-                                                —
-                                            </span>
-                                        ) : (
-                                            <Link
-                                                href={normalizeRepository(
-                                                    project.repository
-                                                )}
-                                            >
-                                                {project.repository}
-                                            </Link>
-                                        )}
-                                    </td>
-                                    <td className="min-w-[140px] whitespace-nowrap px-4 py-3 text-gray-600 sm:px-6 sm:py-4">
-                                        {isPlaceholder ? (
-                                            <span className="text-gray-300">
-                                                —
-                                            </span>
-                                        ) : (
-                                            project.certifiedOn
-                                        )}
-                                    </td>
-                                    <td className="px-4 py-3 text-gray-600 sm:px-6 sm:py-4">
-                                        {isPlaceholder ? (
-                                            <span className="text-gray-300">
-                                                —
-                                            </span>
-                                        ) : hasBlurb ? (
-                                            <Tooltip.Root>
-                                                <Tooltip.Trigger asChild>
-                                                    <span className="line-clamp-2 cursor-help sm:line-clamp-none">
-                                                        {project.blurb}
+                                        <th
+                                            scope="row"
+                                            className="relative px-3 py-3 text-left font-semibold text-gray-900 break-all sm:break-normal sm:px-6 sm:py-4"
+                                        >
+                                            {isPlaceholder ||
+                                            !repositoryDisplay ? (
+                                                <span className="text-gray-300">
+                                                    —
+                                                </span>
+                                            ) : (
+                                                <>
+                                                    <span className="font-semibold break-all sm:break-normal">
+                                                        {repositoryDisplay.owner ? (
+                                                            <>
+                                                                <span className="sm:hidden">
+                                                                    {
+                                                                        repositoryDisplay.name
+                                                                    }
+                                                                </span>
+                                                                <span className="hidden sm:inline">
+                                                                    {
+                                                                        repositoryDisplay.full
+                                                                    }
+                                                                </span>
+                                                            </>
+                                                        ) : (
+                                                            repositoryDisplay.full
+                                                        )}
                                                     </span>
-                                                </Tooltip.Trigger>
-                                                <Tooltip.Portal>
-                                                    <Tooltip.Content
-                                                        className="max-w-xs rounded-md bg-gray-900 px-3 py-2 text-xs text-white shadow-lg"
-                                                        side="top"
-                                                        align="start"
-                                                        sideOffset={6}
+                                                    <Link
+                                                        data-row-link="true"
+                                                        href={repositoryUrl}
+                                                        className="absolute inset-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                                                     >
-                                                        {trimmedBlurb}
-                                                        <Tooltip.Arrow className="fill-gray-900" />
-                                                    </Tooltip.Content>
-                                                </Tooltip.Portal>
-                                            </Tooltip.Root>
-                                        ) : (
-                                            <span className="line-clamp-2 sm:line-clamp-none">
-                                                {project.blurb}
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td className="px-4 py-3 text-right sm:px-6 sm:py-4">
-                                        {isPlaceholder || !statusMeta ? (
-                                            <span className="text-gray-300">
-                                                —
-                                            </span>
-                                        ) : (
-                                            <p
-                                                className={`m-0 flex items-center justify-end gap-2 font-mono text-[0.625rem] font-semibold tracking-wide sm:text-xs ${statusMeta.className}`}
-                                            >
-                                                {statusMeta.label}
-                                            </p>
-                                        )}
-                                    </td>
-                                </tr>
-                            );
+                                                        <span className="sr-only">
+                                                            Visit{" "}
+                                                            {
+                                                                repositoryDisplay.full
+                                                            }
+                                                        </span>
+                                                    </Link>
+                                                </>
+                                            )}
+                                        </th>
+                                        <td className="min-w-[88px] whitespace-nowrap px-3 py-3 text-gray-600 sm:min-w-[140px] sm:px-6 sm:py-4">
+                                            {isPlaceholder ? (
+                                                <span className="text-gray-300">
+                                                    —
+                                                </span>
+                                            ) : (
+                                                project.certifiedOn
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-3 text-gray-600 sm:px-6 sm:py-4">
+                                            {isPlaceholder ? (
+                                                <span className="text-gray-300">
+                                                    —
+                                                </span>
+                                            ) : hasBlurb ? (
+                                                <Tooltip.Root>
+                                                    <Tooltip.Trigger asChild>
+                                                        <span className="line-clamp-2 cursor-help sm:line-clamp-none">
+                                                            {project.blurb}
+                                                        </span>
+                                                    </Tooltip.Trigger>
+                                                    <Tooltip.Portal>
+                                                        <Tooltip.Content
+                                                            className="max-w-xs rounded-md bg-gray-900 px-3 py-2 text-xs text-white shadow-lg"
+                                                            side="top"
+                                                            align="start"
+                                                            sideOffset={6}
+                                                        >
+                                                            {trimmedBlurb}
+                                                            <Tooltip.Arrow className="fill-gray-900" />
+                                                        </Tooltip.Content>
+                                                    </Tooltip.Portal>
+                                                </Tooltip.Root>
+                                            ) : (
+                                                <span className="line-clamp-2 sm:line-clamp-none">
+                                                    {project.blurb}
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-3 text-right sm:px-6 sm:py-4">
+                                            {isPlaceholder || !statusMeta ? (
+                                                <span className="text-gray-300">
+                                                    —
+                                                </span>
+                                            ) : (
+                                                <p
+                                                    className={`m-0 flex items-center justify-end gap-2 font-mono text-[0.625rem] font-semibold tracking-wide sm:text-xs ${statusMeta.className}`}
+                                                >
+                                                    {statusMeta.label}
+                                                </p>
+                                            )}
+                                        </td>
+                                    </tr>
+                                );
                             })}
                         </tbody>
                     </Tooltip.Provider>
