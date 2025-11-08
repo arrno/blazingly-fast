@@ -3,6 +3,7 @@
 import { useEffect, type JSX } from "react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import Link from "next/link";
+import { visibleProjectFilters } from "../constants/projectFilters";
 import { Project, Status } from "../domain/projects";
 import { useCollectionSocket as useCollection } from "../hooks/useCollectionSocket";
 import type { QueryDocumentSnapshot } from "firebase/firestore";
@@ -221,13 +222,7 @@ export function ProjectTable(): JSX.Element {
         orderByField: "certifiedDate",
         orderDirection: "desc",
         pageSize: ROW_TARGET,
-        filters: [
-            {
-                fieldPath: "hidden",
-                opStr: "!=",
-                value: true,
-            },
-        ],
+        filters: visibleProjectFilters,
     });
 
     useEffect(() => {
