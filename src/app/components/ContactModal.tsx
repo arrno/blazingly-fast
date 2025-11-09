@@ -144,7 +144,7 @@ export function ContactModal() {
         isCompact ? "text-xl" : "text-2xl"
     } font-semibold tracking-tight text-gray-900`;
     const formSpacingClass = isCompact ? "space-y-5" : "space-y-6";
-    const textareaClass = `w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)] ${
+    const textareaClass = `w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-[16px] text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)] sm:text-sm ${
         isCompact ? "min-h-[120px]" : "min-h-[160px]"
     }`;
     const submitButtonClass = `inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-8 ${
@@ -207,7 +207,7 @@ export function ContactModal() {
                                     setSubject(event.target.value)
                                 }
                                 placeholder="How can we help?"
-                                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)]"
+                                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-[16px] text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)] sm:text-sm"
                             />
                         </label>
 
@@ -220,7 +220,7 @@ export function ContactModal() {
                                 }
                                 placeholder="you@example.com"
                                 inputMode="email"
-                                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)]"
+                                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-[16px] text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)] sm:text-sm"
                             />
                         </label>
 
