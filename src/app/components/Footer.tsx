@@ -1,7 +1,11 @@
+import Link from "next/link";
 import { PageSection } from "./PageSection";
 import { SplitBadge } from "./SplitBadge";
 import { GetCertifiedButton } from "./GetCertifiedButton";
 import { ContactModalTrigger } from "./ContactModalTrigger";
+
+const legalLinkClass =
+    "inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.25em] text-white/60 transition hover:text-white";
 
 export function Footer() {
     return (
@@ -9,13 +13,6 @@ export function Footer() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.18),_transparent_60%)]" />
             <PageSection className="relative flex flex-col gap-12 py-20 sm:py-24">
                 <div className="space-y-4 max-w-3xl">
-                    {/* <SplitBadge
-                        leading="Certified"
-                        trailing="Blazingly Fast™"
-                        color="#ff6b6b"
-                        className="border-white/10"
-                        trailingClassName="bg-white/10 text-white/80"
-                    /> */}
                     <div className="flex gap-2">
                         <img
                             src="/fast-badge.svg"
@@ -58,14 +55,22 @@ export function Footer() {
                     </GetCertifiedButton>
                 </div>
 
-                <div className="flex flex-col gap-2 text-xs uppercase tracking-[0.25em] text-white/40 sm:flex-row sm:items-center sm:justify-between">
-                    <span>
-                        © {new Date().getFullYear()} blazingly.fast — run
-                        responsibly.
-                    </span>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+                <div className="flex flex-col gap-4 text-xs uppercase tracking-[0.25em]">
+                    <div className="flex flex-col gap-2 text-white/40 sm:flex-row sm:items-center sm:justify-between">
+                        <span>
+                            © {new Date().getFullYear()} blazingly.fast — run
+                            responsibly.
+                        </span>
                         <span>Powered entirely by trust and good vibes.</span>
+                    </div>
+                    <div className="flex flex-wrap gap-4 text-white/60">
                         <ContactModalTrigger className="text-white/60" />
+                        <Link href="/terms" className={legalLinkClass}>
+                            Terms
+                        </Link>
+                        <Link href="/privacy" className={legalLinkClass}>
+                            Privacy
+                        </Link>
                     </div>
                 </div>
             </PageSection>
