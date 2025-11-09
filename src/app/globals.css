@@ -27,6 +27,10 @@ body {
   line-height: 1.6;
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 html {
   scroll-behavior: smooth;
 }
