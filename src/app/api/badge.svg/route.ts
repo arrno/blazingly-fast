@@ -7,6 +7,7 @@ import { getServerFirestore } from "@/lib/firebase/server";
 import { Status, projectIdFromRepo } from "@/app/domain/projects";
 import { extract_repo_from_url } from "@/app/domain/submission";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 // Positive cache TTL only (no negative caching)
@@ -61,31 +62,32 @@ async function loadBadge(status: Status): Promise<string> {
 }
 
 function etagFor(svg: string) {
-    const h = crypto.createHash("sha1").update(svg).digest("hex");
-    return `W/"${h}"`;
+    return `"${crypto.createHash("sha1").update(svg).digest("hex")}"`; // strong ETag
 }
 
 function hitHeaders200FromTag(etag: string) {
     return {
         "Content-Type": "image/svg+xml; charset=utf-8",
         "Cache-Control":
-            "public, max-age=0, s-maxage=86400, stale-while-revalidate=2592000",
+            "public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000",
         "X-Content-Type-Options": "nosniff",
+        Vary: "Accept-Encoding",
         ETag: etag,
-    };
+    } as const;
 }
 function hitHeaders304FromTag(etag: string) {
     return {
         "Cache-Control":
-            "public, max-age=0, s-maxage=86400, stale-while-revalidate=2592000",
+            "public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000",
+        Vary: "Accept-Encoding",
         ETag: etag,
-    };
+    } as const;
 }
 
 // 404 SHOULD NOT be cached, so misses flip to hits immediately later.
 const missHeaders = {
     "Cache-Control": "no-store, max-age=0, s-maxage=0",
-};
+} as const;
 
 function kvKey(owner: string, repo: string, v?: string | null) {
     return `badge:${owner.toLowerCase()}:${repo.toLowerCase()}:${v ?? "0"}`;
@@ -94,10 +96,8 @@ function kvKey(owner: string, repo: string, v?: string | null) {
 function matchesIfNoneMatch(req: NextRequest, etag: string) {
     const inm = req.headers.get("if-none-match");
     if (!inm) return false;
-    return inm
-        .split(",")
-        .map((s) => s.trim())
-        .includes(etag);
+    const vals = inm.split(",").map((s) => s.trim());
+    return vals.includes(etag) || vals.includes(`W/${etag}`);
 }
 
 export async function GET(request: NextRequest) {
@@ -189,9 +189,14 @@ export async function GET(request: NextRequest) {
                 headers: hitHeaders304FromTag(etag),
             });
         }
-        return new NextResponse(svg, {
+
+        const body = new TextEncoder().encode(svg);
+        return new NextResponse(body, {
             status: 200,
-            headers: hitHeaders200FromTag(etag),
+            headers: {
+                ...hitHeaders200FromTag(etag),
+                "Content-Length": String(body.byteLength),
+            },
         });
     } catch {
         return NextResponse.json(
