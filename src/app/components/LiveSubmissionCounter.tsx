@@ -36,7 +36,7 @@ export function LiveSubmissionCounter() {
         loading && !error ? "·".repeat(DIGIT_COUNT) : displayCount;
 
     return (
-        <div className="pointer-events-none fixed left-1/2 top-[3.65rem] z-30 w-full max-w-[9rem] -translate-x-1/2 sm:top-[4.45rem]">
+        <div className="pointer-events-none fixed left-1/2 top-[3.65rem] z-30 w-full max-w-[9rem] -translate-x-1/2 sm:top-[4.45rem] hidden sm:block">
             <div className="flex w-full flex-col gap-1.5 rounded-sm border border-black/5 bg-white/95 py-2 text-center text-slate-900 shadow-[0_12px_22px_rgba(15,23,42,0.12)] backdrop-blur">
                 <div className="flex items-center justify-center gap-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.28em]">
                     <div
