@@ -5,7 +5,7 @@ import { ModalForm } from "../components/ModalForm";
 import { Navbar } from "../components/Navbar";
 import { PageSection } from "../components/PageSection";
 import { ProjectTable } from "../components/ProjectTable";
-import { LiveSubmissionCounter } from "../components/LiveSubmissionCounter";
+// import { LiveSubmissionCounter } from "../components/LiveSubmissionCounter";
 
 const description =
     "Browse every Certified Blazingly Fast™ project, complete with maintainers, repos, and speed claims in the Hall of Speed.";
@@ -38,7 +38,7 @@ export default function HallOfSpeedPage() {
     return (
         <div className="flex min-h-screen flex-col bg-white text-gray-900">
             <Navbar />
-            <LiveSubmissionCounter />
+            {/* <LiveSubmissionCounter /> */}
             <main className="flex-1 bg-gradient-to-b from-white via-white to-gray-50">
                 <PageSection className="flex flex-col items-center gap-10 py-24 text-center">
                     <div className="space-y-4">

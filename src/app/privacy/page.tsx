@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ContactModal } from "../components/ContactModal";
 import { Footer } from "../components/Footer";
-import { LiveSubmissionCounter } from "../components/LiveSubmissionCounter";
+// import { LiveSubmissionCounter } from "../components/LiveSubmissionCounter";
 import { ModalForm } from "../components/ModalForm";
 import { Navbar } from "../components/Navbar";
 import { PageSection } from "../components/PageSection";
@@ -89,7 +89,7 @@ export default function PrivacyPage() {
     return (
         <div className="flex min-h-screen flex-col bg-white text-gray-900">
             <Navbar />
-            <LiveSubmissionCounter />
+            {/* <LiveSubmissionCounter /> */}
             <main className="flex-1 bg-gradient-to-b from-white via-white to-gray-50">
                 <PageSection className="flex max-w-3xl flex-col gap-12 py-16 sm:py-24">
                     <header className="space-y-4 text-center sm:text-left">
