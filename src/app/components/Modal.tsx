@@ -69,13 +69,13 @@ export function Modal({ open, onClose, ariaLabel, children }: ModalProps) {
                 <button
                     type="button"
                     onClick={onClose}
-                    className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-sm font-semibold text-gray-500 transition hover:border-gray-300 hover:text-gray-700"
+                    className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-500 transition hover:border-gray-300 hover:bg-gray-200"
                 >
-                    ×
+                    ✕
                 </button>
                 <div className="p-6 sm:p-8">{children}</div>
             </div>
         </div>,
-        document.body,
+        document.body
     );
 }
