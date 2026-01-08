@@ -72,7 +72,7 @@ export function Navbar() {
                         Leaderboard
                     </Link>
                     <GetCertifiedButton className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800">
-                        {isCompact ? "Certify" : "Get certified"}
+                        {isCompact ? "Certify" : "Certify it"}
                         <span aria-hidden>→</span>
                     </GetCertifiedButton>
                 </div>

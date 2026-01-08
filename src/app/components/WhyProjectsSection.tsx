@@ -16,13 +16,13 @@ const projects = [
 
 export function WhyProjectsSection() {
     return (
-        <div className="bg-gray-50" id="why">
+        <div className="bg-zinc-50" id="why">
             <PageSection className="grid items-start gap-12 border-t border-gray-100 py-24 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
                 <div className="min-w-0 space-y-6">
                     <div className="space-y-3">
-                        <span className="inline-flex items-center rounded-full bg-gray-200/70 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-600">
+                        <p className="text-xs uppercase tracking-[0.35em] text-zinc-500">
                             Why this? Why now?
-                        </span>
+                        </p>
                         <h2 className="text-3xl font-semibold tracking-tight text-gray-950 sm:text-4xl">
                             Why does this exist?
                         </h2>
@@ -57,7 +57,7 @@ export function WhyProjectsSection() {
                     <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
-                                <thead className="bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
+                                <thead className="bg-zinc-50 text-xs uppercase tracking-wider text-gray-500">
                                     <tr>
                                         <th className="px-6 py-4 font-semibold">
                                             Project
@@ -91,7 +91,7 @@ export function WhyProjectsSection() {
 
                     <a
                         href="/hall-of-speed"
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 transition hover:text-gray-600"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 transition hover:text-gray-400"
                     >
                         See the full leaderboard
                         <span aria-hidden>→</span>

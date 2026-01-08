@@ -142,30 +142,45 @@ export function ContactModal() {
     const headerSpacingClass = isCompact ? "space-y-1" : "space-y-2";
     const headingTextClass = `${
         isCompact ? "text-xl" : "text-2xl"
-    } font-semibold tracking-tight text-gray-900`;
+    } font-semibold tracking-tight text-zinc-900`;
     const formSpacingClass = isCompact ? "space-y-5" : "space-y-6";
-    const textareaClass = `w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-[16px] text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)] sm:text-sm ${
+    const inputBaseClass =
+        "w-full rounded-2xl border border-zinc-200 bg-white px-4 py-2.5 text-base text-zinc-900 placeholder:text-zinc-400 transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/30 sm:text-sm";
+    const textareaClass = `${inputBaseClass} ${
         isCompact ? "min-h-[120px]" : "min-h-[160px]"
     }`;
-    const submitButtonClass = `inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-8 ${
-        isCompact ? "py-3" : "py-4"
-    } text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-200 w-full`;
+    const submitButtonClass = `w-full rounded-2xl bg-black ${
+        isCompact ? "py-3" : "py-3.5"
+    } text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70`;
 
     return (
         <Modal open={open} onClose={closeModal} ariaLabel="Contact form">
             <div className={containerSpacingClass}>
-                <header className={headerSpacingClass}>
-                    <h2 className={headingTextClass}>Say hello 👋</h2>
-                    {isCompact ? (
-                        <p className="text-xs text-gray-500">
-                            Drop us a note and we&apos;ll reply soon.
+                <header className="flex items-start justify-between gap-4">
+                    <div className={headerSpacingClass}>
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+                            Contact
                         </p>
-                    ) : (
-                        <p className="text-sm text-gray-600">
-                            Questions, feedback, or spicy benchmark stories —
-                            send them our way.
-                        </p>
-                    )}
+                        <h2 className={headingTextClass}>Say hello 👋</h2>
+                        {isCompact ? (
+                            <p className="text-xs text-zinc-500">
+                                Drop us a note and we&apos;ll reply soon.
+                            </p>
+                        ) : (
+                            <p className="text-sm text-zinc-500">
+                                Questions, feedback, or spicy benchmark stories —
+                                send them our way.
+                            </p>
+                        )}
+                    </div>
+                    <button
+                        type="button"
+                        aria-label="Close contact modal"
+                        onClick={closeModal}
+                        className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-zinc-100 bg-zinc-100 text-sm font-semibold text-zinc-500 transition hover:border-zinc-300 hover:bg-zinc-300 hover:text-zinc-800"
+                    >
+                        ✕
+                    </button>
                 </header>
 
                 {status === "sent" && submission ? (
@@ -199,7 +214,7 @@ export function ContactModal() {
                     </div>
                 ) : (
                     <form className={formSpacingClass} onSubmit={handleSubmit}>
-                        <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
+                        <label className="flex flex-col gap-2 text-sm font-medium text-zinc-700">
                             Subject
                             <input
                                 value={subject}
@@ -207,11 +222,11 @@ export function ContactModal() {
                                     setSubject(event.target.value)
                                 }
                                 placeholder="How can we help?"
-                                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-[16px] text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)] sm:text-sm"
+                                className={inputBaseClass}
                             />
                         </label>
 
-                        <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
+                        <label className="flex flex-col gap-2 text-sm font-medium text-zinc-700">
                             From email
                             <input
                                 value={fromEmail}
@@ -220,11 +235,11 @@ export function ContactModal() {
                                 }
                                 placeholder="you@example.com"
                                 inputMode="email"
-                                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-[16px] text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)] sm:text-sm"
+                                className={inputBaseClass}
                             />
                         </label>
 
-                        <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
+                        <label className="flex flex-col gap-2 text-sm font-medium text-zinc-700">
                             Message
                             <textarea
                                 value={body}

@@ -255,7 +255,7 @@ export function ProjectTable(): JSX.Element {
             )}
             <div className="overflow-x-auto">
                 <table className="min-w-full text-left text-xs text-gray-700 sm:text-sm">
-                    <thead className="bg-gray-50 text-[0.65rem] font-semibold uppercase tracking-wide text-gray-500 sm:text-xs">
+                    <thead className="bg-zinc-50 text-[0.65rem] font-semibold uppercase tracking-wide text-gray-500 sm:text-xs">
                         <tr>
                             <th
                                 scope="col"
@@ -309,9 +309,9 @@ export function ProjectTable(): JSX.Element {
                                             project.name ||
                                             "placeholder"
                                         }-${index}`}
-                                        className={`transition hover:bg-gray-50/80 ${
+                                        className={`transition hover:bg-zinc-50/80 ${
                                             rowIsInteractive
-                                                ? "cursor-pointer focus-within:bg-gray-50/80"
+                                                ? "cursor-pointer focus-within:bg-zinc-50/80"
                                                 : ""
                                         }`}
                                         onClick={
@@ -464,7 +464,7 @@ export function ProjectTable(): JSX.Element {
                     </Tooltip.Provider>
                 </table>
             </div>
-            <div className="flex items-center justify-between gap-6 border-t border-gray-100 bg-gray-50 px-6 py-3 text-xs text-gray-500">
+            <div className="flex items-center justify-between gap-6 border-t border-gray-100 bg-zinc-50 px-6 py-3 text-xs text-gray-500">
                 <div className="flex items-center gap-3 text-gray-500">
                     {loading ? "Loading projects…" : pageLabel}
                 </div>

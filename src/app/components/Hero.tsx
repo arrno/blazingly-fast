@@ -26,7 +26,7 @@ const steps = [
 
 export function Hero() {
     return (
-        <div className="relative overflow-hidden bg-gradient-to-b from-white via-white to-gray-50">
+        <div className="relative overflow-hidden bg-zinc-50">
             <div className="absolute inset-x-0 -top-20 -z-10 h-96 bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.12),_transparent_55%)]" />
             <PageSection className="relative py-24" id="how-it-works">
                 <div className="mx-auto flex max-w-3xl flex-col items-center gap-10 text-center sm:items-start sm:text-left">
@@ -43,7 +43,7 @@ export function Hero() {
                                 className="mt-2"
                             />
                         </div>
-                        <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl lg:text-6xl xl:text-7xl">
+                        <h1 className="text-5xl font-bold tracking-tight text-gray-950 sm:text-6xl lg:text-7xl">
                             The world’s most rigorous self-certification
                             program.
                         </h1>
@@ -59,14 +59,14 @@ export function Hero() {
                     <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
                         <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start w-55 sm:w-auto">
                             <GetCertifiedButton className="flex w-full items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-gray-900/10 transition hover:bg-gray-800 sm:inline-flex sm:w-auto">
-                                Submit your repo
+                                Submit repo
                                 <span aria-hidden>→</span>
                             </GetCertifiedButton>
                             <Link
                                 href="/hall-of-speed"
-                                className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-3 text-sm font-semibold text-gray-800 transition hover:border-gray-300 sm:inline-flex sm:w-auto"
+                                className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-zinc-50 px-6 py-3 text-sm font-semibold text-gray-800 transition hover:border-zinc-400 sm:inline-flex sm:w-auto"
                             >
-                                Browse the leaderboard
+                                Browse leaderboard
                             </Link>
                         </div>
                         <span className="w-full text-center text-xs text-gray-500 sm:w-auto sm:text-left">
@@ -85,13 +85,23 @@ export function Hero() {
                         {steps.map((step) => (
                             <div
                                 key={step.title}
-                                className="rounded-lg border border-gray-200 bg-white/70 p-4 text-left shadow-sm backdrop-blur"
+                                className="rounded-lg border border-gray-100 bg-white/70 p-4 text-left shadow-lg backdrop-blur"
                             >
-                                <span className="inline-flex items-center gap-2 rounded-full bg-gray-200 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-800">
-                                    <span
-                                        className="h-2.5 w-2.5 rounded-full bg-[#ff6b6b]"
+                                <span className="inline-flex items-center gap-2 rounded-md bg-zinc-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-800">
+                                    <svg
+                                        viewBox="0 0 20 20"
                                         aria-hidden
-                                    />
+                                        className="h-4 w-4 text-[#ff6b6b]"
+                                    >
+                                        <path
+                                            d="M16 5 8.5 14 4 9.5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                        />
+                                    </svg>
                                     <span className="font-mono tracking-[0.2em]">
                                         {step.badge}
                                     </span>

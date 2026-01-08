@@ -27,15 +27,16 @@ export function CertificationSection() {
             >
                 <div className="space-y-6">
                     <div className="space-y-3">
-                        <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-600">
-                            FAQ
-                        </span>
+                        <p className="text-xs uppercase tracking-[0.35em] text-zinc-500">
+                            The right vibes
+                        </p>
                         <h2 className="text-3xl font-semibold tracking-tight text-gray-950 sm:text-4xl">
                             Trust the badge. Trust yourself.
                         </h2>
                         <p className="max-w-lg text-base leading-relaxed text-gray-600">
-                            Certified Blazingly Fast™ is a self-reported performance standard.
-                            We measure confidence, not microbenchmarks.
+                            Certified Blazingly Fast™ is a self-reported
+                            performance standard. We measure confidence, not
+                            microbenchmarks.
                         </p>
                     </div>
 

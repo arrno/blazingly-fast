@@ -54,25 +54,19 @@ export function Modal({ open, onClose, ariaLabel, children }: ModalProps) {
     }
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-            <div
-                aria-hidden="true"
-                className="absolute inset-0 h-full w-full cursor-pointer bg-gray-950/60 backdrop-blur-sm"
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-10 sm:px-6">
+            <button
+                type="button"
+                aria-label="Close modal"
+                className="absolute inset-0 cursor-pointer bg-black/50 backdrop-blur-sm"
                 onClick={onClose}
             />
             <div
                 role="dialog"
                 aria-modal="true"
                 aria-label={ariaLabel}
-                className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-gray-100/20 bg-white/95 shadow-2xl shadow-gray-900/20"
+                className="relative z-10 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/20 bg-gradient-to-b from-white to-white/90 shadow-2xl"
             >
-                <button
-                    type="button"
-                    onClick={onClose}
-                    className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-sm font-semibold text-gray-500 transition hover:border-gray-300 hover:bg-gray-200"
-                >
-                    ✕
-                </button>
                 <div className="p-6 sm:p-8">{children}</div>
             </div>
         </div>,

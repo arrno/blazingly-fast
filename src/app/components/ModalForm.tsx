@@ -182,17 +182,21 @@ export function ModalForm() {
     const headerSpacingClass = isCompact ? "space-y-1" : "space-y-2";
     const headingTextClass = `${
         isCompact ? "text-xl" : "text-2xl"
-    } font-semibold tracking-tight text-gray-900`;
+    } font-semibold tracking-tight text-zinc-900`;
     const formSpacingClass = isCompact ? "space-y-5" : "space-y-6";
     const fieldsetPaddingClass = isCompact
         ? "space-y-2 rounded-2xl border border-gray-200 bg-white p-3"
         : "space-y-3 rounded-2xl border border-gray-200 bg-white p-4";
-    const textareaClass = `w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-[16px] text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)] sm:text-sm ${
+    const labelTextClass =
+        "flex flex-col gap-2 text-sm font-medium text-zinc-700";
+    const inputBaseClass =
+        "w-full rounded-2xl border border-zinc-200 bg-white px-4 py-2.5 text-base text-zinc-900 placeholder:text-zinc-400 transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/30 sm:text-sm";
+    const textareaClass = `${inputBaseClass} ${
         isCompact ? "min-h-[72px]" : "min-h-[96px]"
     }`;
-    const submitButtonClass = `inline-flex items-center justify-center gap-2 rounded-lg bg-gray-900 px-8 ${
-        isCompact ? "py-3" : "py-4"
-    } text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-200 w-full`;
+    const submitButtonClass = `w-full rounded-2xl bg-black ${
+        isCompact ? "py-3" : "py-3.5"
+    } text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70`;
     const copyButtonClass = `inline-flex items-center gap-1 rounded-md bg-transparent px-2 py-1 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b6b]/30 ${
         copyState === "copied"
             ? "text-emerald-600"
@@ -202,25 +206,39 @@ export function ModalForm() {
     return (
         <Modal open={open} onClose={closeModal} ariaLabel="Certification form">
             <div className={containerSpacingClass}>
-                <header className={headerSpacingClass}>
-                    <h2 className={headingTextClass}>Submit your project</h2>
-                    {isCompact ? (
-                        <p className="text-xs text-gray-500">
-                            Paste your repo, confirm it&apos;s fast, and submit.
+                <header className="flex items-start justify-between gap-4">
+                    <div className={headerSpacingClass}>
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
+                            Certify
                         </p>
-                    ) : (
-                        <p className="text-sm text-gray-600">
-                            Claim the badge in three moves: paste your repo,
-                            choose honesty, write your speed boast, and we will
-                            handle the rest.
-                        </p>
-                    )}
+                        <h2 className={headingTextClass}>Submit project 🎉</h2>
+                        {isCompact ? (
+                            <p className="text-xs text-zinc-500">
+                                Paste your repo, confirm it&apos;s fast, and
+                                submit.
+                            </p>
+                        ) : (
+                            <p className="text-sm text-zinc-500">
+                                Claim the badge in three moves: paste your repo,
+                                choose honesty, write your speed boast, and we
+                                will handle the rest.
+                            </p>
+                        )}
+                    </div>
+                    <button
+                        type="button"
+                        aria-label="Close certification modal"
+                        onClick={closeModal}
+                        className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border border-zinc-100 bg-zinc-100 text-sm font-semibold text-zinc-500 transition hover:border-zinc-300 hover:bg-zinc-300 hover:text-zinc-800"
+                    >
+                        ✕
+                    </button>
                 </header>
 
                 <form className={formSpacingClass} onSubmit={handleSubmit}>
                     {status !== "success" && (
                         <>
-                            <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
+                            <label className={labelTextClass}>
                                 Repo URL
                                 <input
                                     value={repoInput}
@@ -228,7 +246,7 @@ export function ModalForm() {
                                         setRepoInput(event.target.value)
                                     }
                                     placeholder="https://github.com/you/yourproject"
-                                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-[16px] text-gray-900 shadow-sm transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/20 focus:shadow-[0_0_0_4px_rgba(255,107,107,0.12)] sm:text-sm"
+                                    className={inputBaseClass}
                                 />
                             </label>
 
@@ -260,7 +278,7 @@ export function ModalForm() {
                                 </label>
                             </fieldset>
 
-                            <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
+                            <label className={labelTextClass}>
                                 Speed claim blurb
                                 <textarea
                                     value={blurb}
@@ -320,7 +338,7 @@ export function ModalForm() {
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div className="space-y-1">
                                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                                    Congratulations 🎉
+                                    Congratulations 🔥
                                 </p>
                                 <p className="text-sm text-gray-600">
                                     Drop this flex into your README, docs, or

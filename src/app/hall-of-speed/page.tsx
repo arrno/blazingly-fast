@@ -39,7 +39,7 @@ export default function HallOfSpeedPage() {
         <div className="flex min-h-screen flex-col bg-white text-gray-900">
             <Navbar />
             {/* <LiveSubmissionCounter /> */}
-            <main className="flex-1 bg-gradient-to-b from-white via-white to-gray-50">
+            <main className="flex-1 bg-zinc-50">
                 <PageSection className="flex flex-col items-center gap-10 py-24 text-center">
                     <div className="space-y-4">
                         <h1 className="text-4xl font-bold tracking-tight text-gray-950 sm:text-5xl lg:text-6xl">
