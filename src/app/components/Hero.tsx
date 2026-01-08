@@ -28,7 +28,10 @@ export function Hero() {
     return (
         <div className="relative overflow-hidden bg-zinc-50">
             <div className="absolute inset-x-0 -top-20 -z-10 h-96 bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.12),_transparent_55%)]" />
-            <PageSection className="relative py-24" id="how-it-works">
+            <PageSection
+                className="relative pt-[4.5rem] pb-24 sm:pt-32 sm:pb-24"
+                id="how-it-works"
+            >
                 <div className="mx-auto flex max-w-3xl flex-col items-center gap-10 text-center sm:items-start sm:text-left">
                     <div className="space-y-6">
                         <div className="flex gap-2 justify-center sm:justify-start">
