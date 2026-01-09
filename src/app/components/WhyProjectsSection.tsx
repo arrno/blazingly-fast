@@ -59,13 +59,13 @@ export function WhyProjectsSection() {
                             <table className="min-w-full divide-y divide-gray-200 text-left text-sm">
                                 <thead className="bg-zinc-50 text-xs uppercase tracking-wider text-gray-500">
                                     <tr>
-                                        <th className="px-6 py-4 font-semibold">
+                                        <th className="px-4 py-4 font-semibold">
                                             Project
                                         </th>
-                                        <th className="px-6 py-4 font-semibold">
+                                        <th className="px-4 py-4 font-semibold">
                                             Stars
                                         </th>
-                                        <th className="px-6 py-4 font-semibold">
+                                        <th className="px-4 py-4 font-semibold">
                                             Certification
                                         </th>
                                     </tr>
@@ -73,13 +73,13 @@ export function WhyProjectsSection() {
                                 <tbody className="divide-y divide-gray-100">
                                     {projects.map((project) => (
                                         <tr key={project.name}>
-                                            <td className="px-6 py-4 font-semibold text-gray-900">
+                                            <td className="px-4 py-4 font-semibold text-gray-900">
                                                 {project.name}
                                             </td>
-                                            <td className="px-6 py-4 text-gray-600">
+                                            <td className="px-4 py-4 text-gray-600">
                                                 {project.stars}
                                             </td>
-                                            <td className="px-6 py-4 text-gray-700">
+                                            <td className="px-4 py-4 text-gray-700">
                                                 {project.certification}
                                             </td>
                                         </tr>

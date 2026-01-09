@@ -13,7 +13,7 @@ export function CertificationFormCard({
     ...rest
 }: CertificationFormCardProps) {
     const baseClasses =
-        "relative min-w-0 rounded-lg border border-gray-200 bg-white/85 p-8 shadow-2xl shadow-gray-900/10 backdrop-blur";
+        "relative min-w-0 rounded-lg border border-gray-200 bg-white/85 p-4 sm:p-6 shadow-2xl shadow-gray-900/10 backdrop-blur";
 
     return (
         <div

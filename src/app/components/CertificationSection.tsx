@@ -28,7 +28,7 @@ export function CertificationSection() {
                 <div className="space-y-6">
                     <div className="space-y-3">
                         <p className="text-xs uppercase tracking-[0.35em] text-zinc-500">
-                            The right vibes
+                            Vibes required
                         </p>
                         <h2 className="text-3xl font-semibold tracking-tight text-gray-950 sm:text-4xl">
                             Trust the badge. Trust yourself.

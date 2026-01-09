@@ -88,7 +88,7 @@ export function Hero() {
                         {steps.map((step) => (
                             <div
                                 key={step.title}
-                                className="rounded-lg border border-gray-100 bg-white/70 p-4 text-left shadow-lg backdrop-blur"
+                                className="rounded-md border border-gray-100 bg-white/70 p-4 text-left shadow-lg backdrop-blur"
                             >
                                 <span className="inline-flex items-center gap-2 rounded-md bg-zinc-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-800">
                                     <svg
@@ -109,7 +109,7 @@ export function Hero() {
                                         {step.badge}
                                     </span>
                                 </span>
-                                <h3 className="mt-4 text-sm font-semibold text-gray-900">
+                                <h3 className="mt-4 text-sm font-bold text-gray-900">
                                     {step.title}
                                 </h3>
                                 <p className="mt-2 text-sm leading-relaxed text-gray-600">
