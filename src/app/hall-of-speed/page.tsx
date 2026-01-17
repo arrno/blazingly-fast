@@ -4,7 +4,7 @@ import { Footer } from "../components/Footer";
 import { ModalForm } from "../components/ModalForm";
 import { Navbar } from "../components/Navbar";
 import { PageSection } from "../components/PageSection";
-import { ProjectTable } from "../components/ProjectTable";
+import { RepoListTable } from "../components/RepoListTable";
 // import { LiveSubmissionCounter } from "../components/LiveSubmissionCounter";
 
 const description =
@@ -54,8 +54,8 @@ export default function HallOfSpeedPage() {
                             catch up.
                         </p>
                     </div>
-                    <div className="w-full max-w-5xl">
-                        <ProjectTable />
+                    <div className="w-full max-w-4xl">
+                        <RepoListTable />
                     </div>
                 </PageSection>
             </main>

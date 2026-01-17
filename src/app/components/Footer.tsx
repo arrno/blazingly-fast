@@ -49,7 +49,7 @@ export function Footer() {
                             place in the Hall of Speed.
                         </p>
                     </div>
-                    <GetCertifiedButton className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/15">
+                    <GetCertifiedButton className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/15">
                         Get certified
                         <span aria-hidden>→</span>
                     </GetCertifiedButton>
