@@ -97,7 +97,7 @@ export function useCollectionSocket<T>(
     const [data, setData] = useState<T[]>([]);
     const [page, setPage] = useState(0);
     const [totalRecords, setTotalRecords] = useState(0);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [hasStaleData, setHasStaleData] = useState(false);
 

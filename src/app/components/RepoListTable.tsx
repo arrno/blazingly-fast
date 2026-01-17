@@ -7,6 +7,7 @@ import { useCollectionSocket as useCollection } from "../hooks/useCollectionSock
 import { mapProjectDocument } from "./projectData";
 import { RepoCard } from "./RepoCard";
 import { PageNavigation } from "./PageNavigation";
+import { Spinner } from "./Spinner";
 
 const PAGE_SIZE = 10;
 
@@ -87,9 +88,17 @@ export function RepoListTable() {
                     </div>
                 ) : (
                     <div className="px-6 py-16 text-center text-sm text-gray-500">
-                        {loading
-                            ? "Loading speedsters…"
-                            : "No repositories certified yet. Submit yours to claim a badge."}
+                        {loading ? (
+                            <div className="flex flex-col items-center gap-3 text-gray-600">
+                                <Spinner
+                                    className="h-6 w-6 text-gray-400"
+                                    label="Loading certified projects"
+                                />
+                                <span>Loading speedsters…</span>
+                            </div>
+                        ) : (
+                            "No repositories certified yet. Submit yours to claim a badge."
+                        )}
                     </div>
                 )}
                 <div className="mx-auto h-px w-[90%] bg-gray-100" />
