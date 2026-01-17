@@ -35,6 +35,15 @@ html {
   scroll-behavior: smooth;
 }
 
+.repo-card__meta-row {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.repo-card__meta-row::-webkit-scrollbar {
+  display: none;
+}
+
 @layer utilities {
   .line-clamp-2 {
     display: -webkit-box;
