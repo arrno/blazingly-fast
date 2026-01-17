@@ -8,6 +8,8 @@ const VARIANT_STYLES = {
     warning: "border border-amber-200 bg-amber-50 text-amber-800",
     danger: "border border-rose-200 bg-rose-50 text-rose-800",
     hot: "px-2 py-0.5 border border-orange-200 bg-gradient-to-r from-orange-100 to-red-100 text-orange-700",
+    iris: "px-2 py-0.5 border border-purple-200 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700",
+    sunny: "px-2 py-0.5 border border-yellow-200 bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-700",
     muted: "border-0 bg-zinc-100 text-zinc-600",
 } as const;
 

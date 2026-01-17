@@ -79,7 +79,10 @@ export function RepoCard({
     const displayMaintainer =
         project.maintainer.trim() || repositoryDisplay?.owner || "";
     const hasMaintainer = displayMaintainer.length > 0;
-    const hasBlurb = project.blurb.trim().length > 0;
+    const blurbLength = project.blurb.trim().length;
+    const hasBlurb = blurbLength > 0;
+    const isBoostedBlurb = hasBlurb && blurbLength >= 120;
+    const isMidBlurb = hasBlurb && blurbLength >= 45 && blurbLength < 120;
     const canVisitRepo = repositoryDisplay && repositoryUrl.length > 0;
 
     const isTableVariant = variant === "table";
@@ -156,6 +159,11 @@ export function RepoCard({
                     </Badge>
                 </div>
                 <div className="repo-card__meta-row flex items-center gap-2 overflow-x-auto whitespace-nowrap">
+                    {isBoostedBlurb ? (
+                        <Badge variant="iris">🌀 Boosted</Badge>
+                    ) : isMidBlurb ? (
+                        <Badge variant="sunny">🥇 highlight</Badge>
+                    ) : null}
                     {statusMeta && (
                         <Badge variant={STATUS_BADGE_VARIANT[project.status]}>
                             {statusMeta.label}
