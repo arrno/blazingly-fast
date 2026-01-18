@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type PropsWithChildren } from "react";
+import { useEffect, type PropsWithChildren } from "react";
 import { createPortal } from "react-dom";
 
 interface ModalProps extends PropsWithChildren {
@@ -10,15 +10,11 @@ interface ModalProps extends PropsWithChildren {
 }
 
 export function Modal({ open, onClose, ariaLabel, children }: ModalProps) {
-    const [mounted, setMounted] = useState(false);
+    const portalTarget =
+        typeof document !== "undefined" ? document.body : null;
 
     useEffect(() => {
-        setMounted(true);
-        return () => setMounted(false);
-    }, []);
-
-    useEffect(() => {
-        if (!open) {
+        if (!open || typeof window === "undefined") {
             return;
         }
 
@@ -33,23 +29,19 @@ export function Modal({ open, onClose, ariaLabel, children }: ModalProps) {
     }, [open, onClose]);
 
     useEffect(() => {
-        if (!mounted) {
+        if (!open || typeof document === "undefined") {
             return;
         }
 
         const originalOverflow = document.body.style.overflow;
-        if (open) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = originalOverflow;
-        }
+        document.body.style.overflow = "hidden";
 
         return () => {
             document.body.style.overflow = originalOverflow;
         };
-    }, [open, mounted]);
+    }, [open]);
 
-    if (!mounted || !open) {
+    if (!portalTarget || !open) {
         return null;
     }
 
@@ -70,6 +62,6 @@ export function Modal({ open, onClose, ariaLabel, children }: ModalProps) {
                 <div className="p-6 sm:p-8">{children}</div>
             </div>
         </div>,
-        document.body
+        portalTarget
     );
 }

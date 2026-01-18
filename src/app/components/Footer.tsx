@@ -1,6 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
 import { PageSection } from "./PageSection";
-import { SplitBadge } from "./SplitBadge";
 import { GetCertifiedButton } from "./GetCertifiedButton";
 import { ContactModalTrigger } from "./ContactModalTrigger";
 
@@ -17,10 +17,12 @@ export function Footer() {
             <PageSection className="relative z-10 flex flex-col gap-12 py-20 sm:py-24">
                 <div className="space-y-4 max-w-3xl">
                     <div className="flex gap-2">
-                        <img
+                        <Image
                             src="/fast-badge.svg"
                             alt="Blazingly fast badge"
                             className="mt-2"
+                            width={104}
+                            height={20}
                         />
                         {/* <img
                             src="/slow-badge.svg"

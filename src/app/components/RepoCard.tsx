@@ -2,11 +2,7 @@ import Link from "next/link";
 import { Project, Status } from "../domain/projects";
 import { Badge, type BadgeVariant } from "./Badge";
 import { HashEmojiIcon } from "./HashEmojiIcon";
-import {
-    getRepositoryDisplay,
-    normalizeRepository,
-    STATUS_META,
-} from "./projectData";
+import { getRepositoryLinkMeta, STATUS_META } from "./projectData";
 
 const STATUS_BADGE_VARIANT: Record<Status, BadgeVariant> = {
     [Status.Fast]: "hot",
@@ -18,6 +14,7 @@ type RepoCardProps = {
     project: Project;
     variant?: "standalone" | "table";
     className?: string;
+    disableInteraction?: boolean;
 };
 
 const ACTION_BUTTON_CLASSES =
@@ -69,12 +66,10 @@ export function RepoCard({
     project,
     variant = "standalone",
     className = "",
+    disableInteraction = false,
 }: RepoCardProps) {
-    const repositoryDisplay = getRepositoryDisplay(
-        project.repository,
-        project.name
-    );
-    const repositoryUrl = normalizeRepository(project.repository);
+    const { repositoryDisplay, repositoryUrl, canVisitRepo } =
+        getRepositoryLinkMeta(project);
     const statusMeta = STATUS_META[project.status];
     const displayMaintainer =
         project.maintainer.trim() || repositoryDisplay?.owner || "";
@@ -84,13 +79,12 @@ export function RepoCard({
     const isManifestoBlurb = hasBlurb && blurbLength >= 120;
     const isDetailedBlurb = hasBlurb && blurbLength >= 45 && blurbLength < 120;
     const isConciseBlurb = hasBlurb && blurbLength > 0 && blurbLength < 45;
-    const canVisitRepo = repositoryDisplay && repositoryUrl.length > 0;
 
     const isTableVariant = variant === "table";
     const wrapperClasses = isTableVariant
         ? "block py-4"
         : "block rounded-md border border-gray-200 bg-white p-4";
-    const clickableClasses = canVisitRepo
+    const clickableClasses = canVisitRepo && !disableInteraction
         ? "group cursor-pointer transition-shadow duration-200 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-200"
         : "";
     const hashSeed =
@@ -183,7 +177,7 @@ export function RepoCard({
     const combinedClasses =
         `${wrapperClasses} ${clickableClasses} ${className}`.trim();
 
-    if (canVisitRepo) {
+    if (canVisitRepo && !disableInteraction) {
         return (
             <Link href={repositoryUrl} className={combinedClasses}>
                 {content}

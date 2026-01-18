@@ -37,6 +37,7 @@ export async function fetchGithubProject(
 export async function githubProjectHasBadge(
     request: GithubRequest
 ): Promise<boolean> {
+    void request;
     // TODO fetch project, check readme for https://blazingly.fast/api/badge.svg
     // if repo exists and references our badge, return true else false
     // when someone submits a repo, schedule a check in 24 hours.. if no badge,

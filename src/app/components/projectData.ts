@@ -174,3 +174,20 @@ export function getRepositoryDisplay(
         return null;
     }
 }
+
+export function getRepositoryLinkMeta(
+    project: Pick<Project, "repository" | "name">
+) {
+    const repositoryDisplay = getRepositoryDisplay(
+        project.repository,
+        project.name
+    );
+    const repositoryUrl = normalizeRepository(project.repository);
+    const canVisitRepo = Boolean(repositoryDisplay && repositoryUrl.length > 0);
+
+    return {
+        repositoryDisplay,
+        repositoryUrl,
+        canVisitRepo,
+    } as const;
+}

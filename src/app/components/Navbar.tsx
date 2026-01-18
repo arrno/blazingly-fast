@@ -48,13 +48,13 @@ export function Navbar() {
                     {/* <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-black text-sm font-bold text-white">
                         🔥
                     </span> */}
-                    <span className="inline-flex items-center gap-1.5 text-lg font-bold font-mono tracking-tight tracking-[0.2em]">
+                    <span className="inline-flex items-center gap-1.5 text-lg sm:text-xl font-semibold font-mono tracking-tight tracking-[0.2em]">
                         <Image
                             src="/badger_icon.png"
                             alt="Badger logo"
                             width={24}
                             height={24}
-                            className="w-7 -translate-y-0.25"
+                            className="w-7 sm:w-7.25 -translate-y-0.25"
                             priority
                         />
                         BLAZINGLY.fast
@@ -76,11 +76,11 @@ export function Navbar() {
                 <div className="flex items-center gap-2">
                     <Link
                         href="/hall-of-speed"
-                        className="hidden rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:text-gray-900 sm:inline-flex"
+                        className="hidden rounded-lg border border-gray-300 px-4 py-2 sm:py-3 text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:text-gray-900 sm:inline-flex"
                     >
                         Leaderboard
                     </Link>
-                    <GetCertifiedButton className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800">
+                    <GetCertifiedButton className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 sm:py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800">
                         {isCompact ? "Certify" : "Certify it"}
                         <span aria-hidden>→</span>
                     </GetCertifiedButton>

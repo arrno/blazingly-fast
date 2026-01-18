@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import type { QueryDocumentSnapshot } from "firebase/firestore";
 import { visibleProjectFilters } from "../constants/projectFilters";
 import { useCollectionSocket } from "../hooks/useCollectionSocket";

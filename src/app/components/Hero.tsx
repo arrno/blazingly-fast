@@ -1,6 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
 import { PageSection } from "./PageSection";
-import { SplitBadge } from "./SplitBadge";
 import { GetCertifiedButton } from "./GetCertifiedButton";
 import { HowCards } from "./HowCards";
 
@@ -15,15 +15,19 @@ export function Hero() {
                 <div className="mx-auto flex max-w-3xl flex-col items-center gap-10 text-center sm:items-start sm:text-left">
                     <div className="space-y-6">
                         <div className="flex gap-2 justify-center sm:justify-start">
-                            <img
+                            <Image
                                 src="/fast-badge.svg"
                                 alt="Blazingly fast badge"
                                 className="mt-2"
+                                width={104}
+                                height={20}
                             />
-                            <img
+                            <Image
                                 src="/slow-badge.svg"
                                 alt="Blazingly pending badge"
                                 className="mt-2"
+                                width={124}
+                                height={20}
                             />
                         </div>
                         <h1 className="text-5xl font-bold tracking-tight text-gray-950 sm:text-6xl lg:text-7xl">

@@ -3,7 +3,7 @@ import { Project, Status } from "../domain/projects";
 const long_blurb =
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. precis";
 
-const projectEntries: Project[] = [
+export const projectEntries: Project[] = [
     {
         id: "0",
         certifiedDate: new Date(),
