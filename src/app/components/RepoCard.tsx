@@ -81,8 +81,9 @@ export function RepoCard({
     const hasMaintainer = displayMaintainer.length > 0;
     const blurbLength = project.blurb.trim().length;
     const hasBlurb = blurbLength > 0;
-    const isBoostedBlurb = hasBlurb && blurbLength >= 120;
-    const isMidBlurb = hasBlurb && blurbLength >= 45 && blurbLength < 120;
+    const isManifestoBlurb = hasBlurb && blurbLength >= 120;
+    const isDetailedBlurb = hasBlurb && blurbLength >= 45 && blurbLength < 120;
+    const isConciseBlurb = hasBlurb && blurbLength > 0 && blurbLength < 45;
     const canVisitRepo = repositoryDisplay && repositoryUrl.length > 0;
 
     const isTableVariant = variant === "table";
@@ -159,10 +160,12 @@ export function RepoCard({
                     </Badge>
                 </div>
                 <div className="repo-card__meta-row flex items-center gap-2 overflow-x-auto whitespace-nowrap">
-                    {isBoostedBlurb ? (
-                        <Badge variant="iris">🌀 Boosted</Badge>
-                    ) : isMidBlurb ? (
-                        <Badge variant="sunny">🥇 highlight</Badge>
+                    {isManifestoBlurb ? (
+                        <Badge variant="iris">🌀 Manifesto</Badge>
+                    ) : isDetailedBlurb ? (
+                        <Badge variant="sunny">🥇 Detailed</Badge>
+                    ) : isConciseBlurb ? (
+                        <Badge variant="sage">🌱 Concise</Badge>
                     ) : null}
                     {statusMeta && (
                         <Badge variant={STATUS_BADGE_VARIANT[project.status]}>
