@@ -106,7 +106,7 @@ export function RepoCard({
     const content = (
         <div>
             <div className="grid grid-cols-[auto_1fr] gap-4">
-                <HashEmojiIcon text={hashSeed} />
+                <HashEmojiIcon text={hashSeed} className="mt-1" />
                 <div className="min-w-0 space-y-1 text-left">
                     <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
                         <div className="flex flex-wrap items-center gap-2">
