@@ -44,7 +44,7 @@ export function Footer() {
                     </p>
                 </div>
 
-                <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 text-sm text-white/80 shadow-[0_20px_60px_-20px_rgba(15,23,42,0.6)] sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-white/5 p-6 text-sm text-white/80 shadow-[0_20px_60px_-20px_rgba(15,23,42,0.6)] sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <p className="text-white mb-1">
                             Ready to self-certify?
@@ -54,7 +54,7 @@ export function Footer() {
                             place in the Hall of Speed.
                         </p>
                     </div>
-                    <GetCertifiedButton className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/15">
+                    <GetCertifiedButton className="inline-flex items-center justify-center gap-2 rounded-lg bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/15">
                         Get certified
                         <span aria-hidden>→</span>
                     </GetCertifiedButton>
