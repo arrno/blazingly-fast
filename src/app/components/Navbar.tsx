@@ -54,7 +54,7 @@ export function Navbar() {
                             alt="Badger logo"
                             width={24}
                             height={24}
-                            className="w-7"
+                            className="w-7 -translate-y-0.25"
                             priority
                         />
                         BLAZINGLY.fast
