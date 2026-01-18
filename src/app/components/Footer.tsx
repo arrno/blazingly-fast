@@ -9,9 +9,12 @@ const legalLinkClass =
 
 export function Footer() {
     return (
-        <footer className="relative overflow-hidden border-t border-white/10 bg-gray-950 text-gray-200">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(148,163,184,0.18),_transparent_60%)]" />
-            <PageSection className="relative flex flex-col gap-12 py-20 sm:py-24">
+        <footer className="relative overflow-hidden border-t border-white/10 bg-slate-950 text-gray-200">
+            <div className="pointer-events-none absolute inset-0">
+                <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-950/95 to-slate-900" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(168,85,247,0.12),_rgba(76,29,149,0.08)_45%,_transparent_70%)]" />
+            </div>
+            <PageSection className="relative z-10 flex flex-col gap-12 py-20 sm:py-24">
                 <div className="space-y-4 max-w-3xl">
                     <div className="flex gap-2">
                         <img

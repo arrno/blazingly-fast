@@ -1,11 +1,17 @@
 import { PageSection } from "./PageSection";
 
 const projects = [
-    { name: "tokio", stars: "⭐⭐⭐", certification: "✅ blazingly fast" },
+    {
+        name: "tokio",
+        stars: "⭐⭐⭐",
+        certification: "blazingly fast",
+        certified: true,
+    },
     {
         name: "polars",
         stars: "⭐⭐⭐⭐",
-        certification: "✅ blazingly fast",
+        certification: "blazingly fast",
+        certified: true,
     },
     {
         name: "your project here",
@@ -13,6 +19,27 @@ const projects = [
         certification: "☐ pending honesty",
     },
 ];
+
+function CheckBadgeIcon({ className }: { className?: string }) {
+    return (
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden className={className}>
+            <circle
+                cx="10"
+                cy="10"
+                r="8.5"
+                className="stroke-emerald-500"
+                strokeWidth="1.5"
+            />
+            <path
+                d="M6 10.5l2.2 2.2L14 7"
+                className="stroke-emerald-600"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    );
+}
 
 export function WhyProjectsSection() {
     return (
@@ -46,7 +73,7 @@ export function WhyProjectsSection() {
                             🏆 Current Certified Projects
                         </span> */}
                         <h3 className="text-2xl font-semibold tracking-tight text-gray-950">
-                            🏆 Projects already blazing
+                            Projects already blazing 🐎
                         </h3>
                         <p className="text-sm leading-relaxed text-gray-600">
                             Every submission joins the Hall of Speed. These are
@@ -80,7 +107,14 @@ export function WhyProjectsSection() {
                                                 {project.stars}
                                             </td>
                                             <td className="px-4 py-4 text-gray-700">
-                                                {project.certification}
+                                                {project.certified ? (
+                                                    <span className="inline-flex items-center gap-2">
+                                                        <CheckBadgeIcon className="h-4 w-4" />
+                                                        {project.certification}
+                                                    </span>
+                                                ) : (
+                                                    project.certification
+                                                )}
                                             </td>
                                         </tr>
                                     ))}

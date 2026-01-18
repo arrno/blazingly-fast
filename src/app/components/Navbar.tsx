@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -47,8 +48,16 @@ export function Navbar() {
                     {/* <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-black text-sm font-bold text-white">
                         🔥
                     </span> */}
-                    <span className="text-lg font-bold tracking-tight font-mono tracking-[0.2em]">
-                        <span className="pr-1">🔥</span>blazingly.fast
+                    <span className="inline-flex items-center gap-1.5 text-lg font-bold font-mono tracking-tight tracking-[0.2em]">
+                        <Image
+                            src="/badger_icon.png"
+                            alt="Badger logo"
+                            width={24}
+                            height={24}
+                            className="w-7"
+                            priority
+                        />
+                        BLAZINGLY.fast
                     </span>
                 </Link>
 
