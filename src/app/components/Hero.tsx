@@ -46,7 +46,7 @@ export function Hero() {
                     <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start">
                         <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-start w-55 sm:w-auto">
                             <GetCertifiedButton className="flex w-full items-center justify-center gap-2 rounded-xl bg-gray-900 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-gray-900/10 transition hover:bg-gray-800 sm:inline-flex sm:w-auto">
-                                Submit repo
+                                Certify repo
                                 <span aria-hidden>→</span>
                             </GetCertifiedButton>
                             <Link

@@ -55,7 +55,7 @@ export function Footer() {
                         </p>
                     </div>
                     <GetCertifiedButton className="inline-flex items-center justify-center gap-2 rounded-lg bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-white/15">
-                        Get certified
+                        Certify repo
                         <span aria-hidden>→</span>
                     </GetCertifiedButton>
                 </div>
