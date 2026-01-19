@@ -9,7 +9,7 @@ const legalLinkClass =
 
 export function Footer() {
     return (
-        <footer className="relative overflow-hidden border-t border-white/10 bg-slate-950 text-gray-200">
+        <footer className="relative overflow-hidden border-t border-gray-200 bg-slate-950 text-gray-200">
             <div className="pointer-events-none absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-950/95 to-slate-900" />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(168,85,247,0.12),_rgba(76,29,149,0.08)_45%,_transparent_70%)]" />

@@ -36,7 +36,7 @@ export function Navbar() {
     }, []);
 
     return (
-        <header className="sticky top-0 z-20 border-b border-black/5 bg-white/80 backdrop-blur">
+        <header className="sticky top-0 z-20 border-b border-gray-200 bg-white/80 backdrop-blur">
             <PageSection
                 size="tight"
                 className="flex items-center justify-between"

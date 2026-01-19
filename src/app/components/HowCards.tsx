@@ -26,7 +26,7 @@ interface HowCardsProps {
 export function HowCards({ ariaLabelledBy }: HowCardsProps) {
     return (
         <div
-            className="w-full rounded-md border border-white/70 bg-white/85 p-6 shadow-lg shadow-gray-900/5 backdrop-blur"
+            className="w-full rounded-md border border-gray-200 bg-white/85 p-6 shadow-lg shadow-gray-900/5 backdrop-blur"
             aria-labelledby={ariaLabelledBy}
         >
             <div className="flex flex-col gap-8 sm:flex-row sm:gap-0">

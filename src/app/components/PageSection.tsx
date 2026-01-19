@@ -13,7 +13,7 @@ export function PageSection({
     ...rest
 }: PropsWithChildren<PageSectionProps>) {
     const spacingClasses =
-        size === "tight" ? "px-6 py-6" : "px-6 py-16 sm:py-30";
+        size === "tight" ? "px-6 py-5" : "px-6 py-16 sm:py-30";
     const baseClasses = `mx-auto w-full max-w-6xl ${spacingClasses}`;
     const merged = className ? `${baseClasses} ${className}` : baseClasses;
 
