@@ -79,7 +79,7 @@ export function ModalForm() {
             return "";
         }
         const encodedRepo = encodeURIComponent(repoSlug);
-        return `[![blazingly fast](https://blazingly.fast/api/badge.svg?repo=${encodedRepo})](https://blazingly.fast)`;
+        return `[![blazingly fast](https://www.blazingly.fast/api/badge.svg?repo=${encodedRepo})](https://www.blazingly.fast)`;
     }, [repoSlug, status]);
 
     useEffect(() => {
@@ -369,7 +369,7 @@ export function ModalForm() {
                         )}
                         {successRepo && (
                             <ShareSocial
-                                shareUrl={`https://blazingly.fast/api/badge.svg?repo=${encodeURIComponent(
+                                shareUrl={`https://www.blazingly.fast/api/badge.svg?repo=${encodeURIComponent(
                                     successRepo
                                 )}`}
                                 message={`It's official! 🔥 Just certified ${successRepo} as Blazingly Fast™ on https://blazingly.fast\n\n`}

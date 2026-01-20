@@ -38,7 +38,7 @@ const geistMono = localFont({
     ],
 });
 
-const siteUrl = "https://blazingly.fast";
+const siteUrl = "https://www.blazingly.fast";
 const socialImage = "/opengraph-image.png";
 
 export const metadata: Metadata = {
