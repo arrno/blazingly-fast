@@ -57,7 +57,7 @@ const redis = getRedisInstance();
 type BadgeAsset = {
     svg: string;
     etag: string;
-    body: Uint8Array;
+    body: ArrayBuffer;
     headers200: HeadersInit;
     headers304: HeadersInit;
     contentLength: string;
@@ -82,7 +82,8 @@ async function getBadgeAsset(status: Status): Promise<BadgeAsset> {
 
 async function buildBadgeAsset(status: Status): Promise<BadgeAsset> {
     const svg = loadBadge(status);
-    const body = new TextEncoder().encode(svg);
+    const bodyBytes = new TextEncoder().encode(svg);
+    const body = bodyBytes.buffer;
     const etag = await etagFor(svg);
     return {
         svg,
@@ -90,7 +91,7 @@ async function buildBadgeAsset(status: Status): Promise<BadgeAsset> {
         body,
         headers200: hitHeaders200FromTag(etag),
         headers304: hitHeaders304FromTag(etag),
-        contentLength: String(body.byteLength),
+        contentLength: String(bodyBytes.byteLength),
     };
 }
 
