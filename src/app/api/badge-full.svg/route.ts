@@ -35,32 +35,7 @@ export async function GET(request: NextRequest) {
     const key = kvKey(owner, repo, versionParam);
     const kv = await getRedis();
 
-    // 1) Positive cache check (KV)
-    let cached: string | null = null;
-
-    if (kv) {
-        try {
-            cached = await kv.get(key);
-        } catch (err) {
-            console.log(`failed to read cache. Err: ${err}`);
-        }
-    }
-
-    if (cached) {
-        const etag = await etagFor(cached);
-        if (matchesIfNoneMatch(request, etag)) {
-            return new NextResponse(null, {
-                status: 304,
-                headers: hitHeaders304FromTag(etag),
-            });
-        }
-        return new NextResponse(cached, {
-            status: 200,
-            headers: hitHeaders200FromTag(etag),
-        });
-    }
-
-    // 2) Slow path: Firestore once; only write positives to KV
+    // Slow path: Firestore once; only write positives to KV
     const firestore = getServerFirestore();
     if (!firestore) {
         return NextResponse.json(

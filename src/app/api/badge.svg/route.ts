@@ -54,9 +54,61 @@ function normalizeStatus(rawStatus?: string): Status {
 const WHITELIST = parseWhitelist();
 const redis = getRedisInstance();
 
-async function respondWithBadge(status: Status, request: NextRequest) {
+type BadgeAsset = {
+    svg: string;
+    etag: string;
+    body: Uint8Array;
+    headers200: HeadersInit;
+    headers304: HeadersInit;
+    contentLength: string;
+};
+
+const badgeAssetCache = new Map<Status, Promise<BadgeAsset>>();
+
+async function getBadgeAsset(status: Status): Promise<BadgeAsset> {
+    const normalizedStatus =
+        status === Status.Fast ||
+        status === Status.Average ||
+        status === Status.Pending
+            ? status
+            : Status.Fast;
+    let cached = badgeAssetCache.get(normalizedStatus);
+    if (!cached) {
+        cached = buildBadgeAsset(normalizedStatus);
+        badgeAssetCache.set(normalizedStatus, cached);
+    }
+    return cached;
+}
+
+async function buildBadgeAsset(status: Status): Promise<BadgeAsset> {
     const svg = loadBadge(status);
-    return respondWithSvg(svg, request);
+    const body = new TextEncoder().encode(svg);
+    const etag = await etagFor(svg);
+    return {
+        svg,
+        etag,
+        body,
+        headers200: hitHeaders200FromTag(etag),
+        headers304: hitHeaders304FromTag(etag),
+        contentLength: String(body.byteLength),
+    };
+}
+
+async function respondWithBadge(status: Status, request: NextRequest) {
+    const asset = await getBadgeAsset(status);
+    if (matchesIfNoneMatch(request, asset.etag)) {
+        return new NextResponse(null, {
+            status: 304,
+            headers: asset.headers304,
+        });
+    }
+    return new NextResponse(asset.body, {
+        status: 200,
+        headers: {
+            ...asset.headers200,
+            "Content-Length": asset.contentLength,
+        },
+    });
 }
 
 async function respondWithSvg(svg: string, request: NextRequest) {
@@ -101,12 +153,18 @@ async function proxyToFallback(request: NextRequest) {
     });
 }
 
-async function readCache(owner: string, repo: string, versionParam: string | null) {
+async function readCache(
+    owner: string,
+    repo: string,
+    versionParam: string | null
+) {
     if (!redis) {
         return null;
     }
     try {
-        const cached = await redis.get<string>(kvKey(owner, repo, versionParam));
+        const cached = await redis.get<string>(
+            kvKey(owner, repo, versionParam)
+        );
         return typeof cached === "string" ? cached : null;
     } catch (err) {
         console.warn("Failed to read badge cache", err);
@@ -117,6 +175,7 @@ async function readCache(owner: string, repo: string, versionParam: string | nul
 export async function GET(request: NextRequest) {
     const repoParam = request.nextUrl.searchParams.get("repo");
     const versionParam = request.nextUrl.searchParams.get("v");
+    const hasVersionParam = request.nextUrl.searchParams.has("v");
     const repoInfo = parseRepoParam(repoParam);
 
     if (!repoInfo) {
@@ -129,7 +188,8 @@ export async function GET(request: NextRequest) {
     const owner = repoInfo.owner.toLowerCase();
     const repo = repoInfo.repo.toLowerCase();
     const slug = `${owner}/${repo}`;
-    const cachedStatus = WHITELIST.get(slug);
+    // Allow a manual cache-bust via ?v=... by skipping the whitelist entirely.
+    const cachedStatus = hasVersionParam ? undefined : WHITELIST.get(slug);
 
     if (cachedStatus) {
         try {
