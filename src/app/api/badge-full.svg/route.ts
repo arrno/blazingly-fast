@@ -17,7 +17,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 // Positive cache TTL only (no negative caching)
-const POS_TTL = 60 * 60 * 12; // 12h
+const POS_TTL = 60 * 60 * 24 * 7; // 7d
 
 export async function GET(request: NextRequest) {
     const repoParam = request.nextUrl.searchParams.get("repo");
