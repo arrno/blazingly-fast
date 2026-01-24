@@ -78,8 +78,7 @@ async function respondWithSvg(svg: string, request: NextRequest) {
 }
 
 async function proxyToFallback(request: NextRequest) {
-    const url = new URL(request.nextUrl.toString());
-    url.pathname = FALLBACK_PATH;
+    const url = new URL(FALLBACK_PATH, request.nextUrl.origin);
     const headers = new Headers(request.headers);
     headers.delete("content-length");
 
