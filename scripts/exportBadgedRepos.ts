@@ -236,7 +236,7 @@ async function main() {
     }
 
     writeResults(options.output, results);
-    writeEnvWhitelist(options.envOutput, results);
+    // writeEnvWhitelist(options.envOutput, results);
     console.log(
         `Wrote ${results.length} repos with badges to ${options.output} and ${options.envOutput}`
     );

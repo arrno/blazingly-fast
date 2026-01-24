@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
         // Write ONLY positive hits to KV
         if (kv) {
             try {
-                await kv.set(key, svg, { EX: POS_TTL });
+                await kv.set(key, svg, { ex: POS_TTL });
             } catch (err) {
                 console.log(`failed to write cache. Err: ${err}`);
             }
