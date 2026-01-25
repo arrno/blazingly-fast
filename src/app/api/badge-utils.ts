@@ -62,6 +62,8 @@ export function kvKey(owner: string, repo: string, v?: string | null) {
     return `badge:${owner.toLowerCase()}:${repo.toLowerCase()}:${v ?? "0"}`;
 }
 
+export const POSITIVE_CACHE_TTL_SECONDS = 60 * 60 * 24 * 7; // 7d
+
 export function matchesIfNoneMatch(req: NextRequest, etag: string) {
     const inm = req.headers.get("if-none-match");
     if (!inm) return false;

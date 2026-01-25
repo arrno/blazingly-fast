@@ -3,6 +3,7 @@ import { getRedis } from "@/lib/redis/client";
 import { getServerFirestore } from "@/lib/firebase/server";
 import { Status, projectIdFromRepo } from "@/app/domain/projects";
 import {
+    POSITIVE_CACHE_TTL_SECONDS,
     etagFor,
     hitHeaders200FromTag,
     hitHeaders304FromTag,
@@ -15,9 +16,6 @@ import {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-// Positive cache TTL only (no negative caching)
-const POS_TTL = 60 * 60 * 24 * 7; // 7d
 
 export async function GET(request: NextRequest) {
     const repoParam = request.nextUrl.searchParams.get("repo");
@@ -70,7 +68,7 @@ export async function GET(request: NextRequest) {
         // Write ONLY positive hits to KV
         if (kv) {
             try {
-                await kv.set(key, svg, { ex: POS_TTL });
+                await kv.set(key, svg, { ex: POSITIVE_CACHE_TTL_SECONDS });
             } catch (err) {
                 console.log(`failed to write cache. Err: ${err}`);
             }
