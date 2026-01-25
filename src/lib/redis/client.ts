@@ -1,23 +1,20 @@
-import { createClient } from "redis";
+import { Redis } from "@upstash/redis";
 
-let client: ReturnType<typeof createClient> | null = null;
+let client: Redis | null = null;
 
-const connectPromise = (async (): Promise<ReturnType<
-    typeof createClient
-> | null> => {
+export function getRedisInstance(): Redis | null {
+    if (client) {
+        return client;
+    }
     try {
-        client = createClient({ url: process.env.REDIS_URL });
-        client.on("error", (err) => console.error("Redis error", err));
-        await client.connect();
+        client = Redis.fromEnv();
         return client;
     } catch (err) {
-        console.log(`failed to initialize redis client. Err: ${err}`);
+        console.warn("Failed to initialize Upstash Redis client", err);
+        return null;
     }
-    return null;
-})();
+}
 
-export async function getRedis(): Promise<ReturnType<
-    typeof createClient
-> | null> {
-    return connectPromise;
+export async function getRedis(): Promise<Redis | null> {
+    return getRedisInstance();
 }

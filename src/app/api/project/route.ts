@@ -15,6 +15,13 @@ import {
 import { fetchGithubProject } from "@/app/hooks/useGithub";
 import { addDocument } from "@/app/hooks/useAddDocument";
 import { getServerFirestore } from "@/lib/firebase/server";
+import { getRedis } from "@/lib/redis/client";
+import { writeBadgeMarker } from "@/lib/gcp/bucket";
+import {
+    POSITIVE_CACHE_TTL_SECONDS,
+    kvKey,
+    loadBadge,
+} from "../badge-utils";
 
 export const dynamic = "force-dynamic";
 
@@ -153,7 +160,16 @@ export async function POST(request: NextRequest) {
             updatedAt: FieldValue.serverTimestamp(),
         };
 
-        await addDocument("projects", payload, { id: docId });
+        const markerPromise = writeBadgeMarker(owner, repo, project.status).catch(
+            (error) => {
+                console.warn("Failed to write badge marker", error);
+            }
+        );
+
+        await Promise.all([addDocument("projects", payload, { id: docId }), markerPromise]);
+        warmBadgeCache(owner, repo, project.status).catch((error) => {
+            console.warn("Failed to warm badge cache", error);
+        });
 
         return NextResponse.json(
             {
@@ -171,4 +187,15 @@ export async function POST(request: NextRequest) {
         const status = /not found/i.test(message) ? 404 : 502;
         return NextResponse.json({ error: message }, { status });
     }
+}
+
+async function warmBadgeCache(owner: string, repo: string, status: Status) {
+    const redis = await getRedis();
+    if (!redis) {
+        return;
+    }
+    const svg = loadBadge(status);
+    await redis.set(kvKey(owner, repo, null), svg, {
+        ex: POSITIVE_CACHE_TTL_SECONDS,
+    });
 }

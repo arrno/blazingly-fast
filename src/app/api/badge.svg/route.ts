@@ -1,108 +1,229 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import crypto from "node:crypto";
-import { getRedis } from "@/lib/redis/client";
-import { getServerFirestore } from "@/lib/firebase/server";
-import { Status, projectIdFromRepo } from "@/app/domain/projects";
-import { extract_repo_from_url } from "@/app/domain/submission";
+import { Status, normalizeRepo } from "@/app/domain/projects";
+import { getRedisInstance } from "@/lib/redis/client";
+import {
+    POSITIVE_CACHE_TTL_SECONDS,
+    etagFor,
+    hitHeaders200FromTag,
+    hitHeaders304FromTag,
+    kvKey,
+    loadBadge,
+    matchesIfNoneMatch,
+    missHeaders,
+    parseRepoParam,
+} from "../badge-utils";
+import { badgeMarkerUrl } from "@/lib/badge-marker";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
-// Positive cache TTL only (no negative caching)
-const POS_TTL = 60 * 60 * 12; // 12h
+const FALLBACK_PATH = "/api/badge-full.svg";
 
-const STATUS_TO_BADGE: Record<Status, string> = {
-    [Status.Fast]: "fast-badge.svg",
-    [Status.Pending]: "slow-badge.svg",
-    [Status.Average]: "slow-badge.svg",
+function parseWhitelist(): Map<string, Status> {
+    const raw = process.env.FAST_BADGE_WHITELIST || "";
+    const map = new Map<string, Status>();
+    if (!raw.trim()) {
+        return map;
+    }
+
+    for (const entry of raw.split(",")) {
+        const trimmed = entry.trim();
+        if (!trimmed) continue;
+        const [slugPart, statusPart] = trimmed.split(":");
+        const normalizedSlug = slugPart?.trim().toLowerCase();
+        if (!normalizedSlug || normalizedSlug.split("/").length !== 2) {
+            continue;
+        }
+        const normalizedStatus = normalizeStatus(statusPart);
+        map.set(normalizedSlug, normalizedStatus);
+    }
+
+    return map;
+}
+
+function normalizeStatus(rawStatus?: string): Status {
+    switch (rawStatus?.trim().toLowerCase()) {
+        case Status.Average:
+            return Status.Average;
+        case Status.Pending:
+            return Status.Pending;
+        case Status.Fast:
+        default:
+            return Status.Fast;
+    }
+}
+
+const WHITELIST = parseWhitelist();
+const redis = getRedisInstance();
+
+type BadgeAsset = {
+    svg: string;
+    etag: string;
+    body: ArrayBuffer;
+    headers200: HeadersInit;
+    headers304: HeadersInit;
+    contentLength: string;
 };
 
-function parseRepoParam(
-    rawRepo: string | null
-): { owner: string; repo: string } | null {
-    if (!rawRepo) return null;
-    const trimmed = rawRepo.trim();
-    if (!trimmed) return null;
+const badgeAssetCache = new Map<Status, Promise<BadgeAsset>>();
 
-    const directMatch = trimmed.match(
-        /^(?<owner>[A-Za-z0-9_.-]+)\/(?<repo>[A-Za-z0-9_.-]+)$/
-    );
-    if (directMatch?.groups) {
-        return {
-            owner: directMatch.groups.owner,
-            repo: directMatch.groups.repo,
-        };
+async function getBadgeAsset(status: Status): Promise<BadgeAsset> {
+    const normalizedStatus =
+        status === Status.Fast ||
+        status === Status.Average ||
+        status === Status.Pending
+            ? status
+            : Status.Fast;
+    let cached = badgeAssetCache.get(normalizedStatus);
+    if (!cached) {
+        cached = buildBadgeAsset(normalizedStatus);
+        badgeAssetCache.set(normalizedStatus, cached);
     }
-    return extract_repo_from_url(trimmed);
+    return cached;
 }
 
-const BADGE_SVGS: Partial<Record<Status, string>> = {};
-(async () => {
-    for (const [status, file] of Object.entries(STATUS_TO_BADGE) as [
-        Status,
-        string
-    ][]) {
-        BADGE_SVGS[status] = await readFile(
-            path.join(process.cwd(), "public", file),
-            "utf-8"
+async function buildBadgeAsset(status: Status): Promise<BadgeAsset> {
+    const svg = loadBadge(status);
+    const bodyBytes = new TextEncoder().encode(svg);
+    const body = bodyBytes.buffer;
+    const etag = await etagFor(svg);
+    return {
+        svg,
+        etag,
+        body,
+        headers200: hitHeaders200FromTag(etag),
+        headers304: hitHeaders304FromTag(etag),
+        contentLength: String(bodyBytes.byteLength),
+    };
+}
+
+async function respondWithBadge(
+    status: Status,
+    request: NextRequest
+): Promise<NextResponse> {
+    const asset = await getBadgeAsset(status);
+    if (matchesIfNoneMatch(request, asset.etag)) {
+        return new NextResponse(null, {
+            status: 304,
+            headers: asset.headers304,
+        });
+    }
+    return new NextResponse(asset.body, {
+        status: 200,
+        headers: {
+            ...asset.headers200,
+            "Content-Length": asset.contentLength,
+        },
+    });
+}
+
+async function respondWithSvg(
+    svg: string,
+    request: NextRequest
+): Promise<NextResponse> {
+    const etag = await etagFor(svg);
+    if (matchesIfNoneMatch(request, etag)) {
+        return new NextResponse(null, {
+            status: 304,
+            headers: hitHeaders304FromTag(etag),
+        });
+    }
+    const body = new TextEncoder().encode(svg);
+    return new NextResponse(body, {
+        status: 200,
+        headers: {
+            ...hitHeaders200FromTag(etag),
+            "Content-Length": String(body.byteLength),
+        },
+    });
+}
+
+async function proxyToFallback(request: NextRequest): Promise<NextResponse> {
+    const url = new URL(FALLBACK_PATH, request.nextUrl.origin);
+    url.search = request.nextUrl.search;
+    const headers = new Headers(request.headers);
+    headers.delete("content-length");
+
+    const body =
+        request.method === "GET" || request.method === "HEAD"
+            ? undefined
+            : request.body;
+
+    const response = await fetch(url, {
+        method: request.method,
+        headers,
+        body,
+        redirect: "manual",
+    });
+
+    return new NextResponse(response.body, {
+        status: response.status,
+        headers: response.headers,
+    });
+}
+
+async function readCache(
+    owner: string,
+    repo: string,
+    versionParam: string | null
+): Promise<string | null> {
+    if (!redis) {
+        return null;
+    }
+    try {
+        const cached = await redis.get<string>(
+            kvKey(owner, repo, versionParam)
         );
+        return typeof cached === "string" ? cached : null;
+    } catch (err) {
+        console.warn("Failed to read badge cache", err);
+        return null;
     }
-})();
-
-async function loadBadge(status: Status): Promise<string> {
-    const s = BADGE_SVGS[status];
-    if (s) return s;
-    // rare fallback if the preload hasn’t finished yet
-    return readFile(
-        path.join(process.cwd(), "public", STATUS_TO_BADGE[status]),
-        "utf-8"
-    );
 }
 
-function etagFor(svg: string) {
-    return `"${crypto.createHash("sha1").update(svg).digest("hex")}"`; // strong ETag
+async function writeCache(
+    owner: string,
+    repo: string,
+    versionParam: string | null,
+    svg: string
+): Promise<void> {
+    if (!redis) {
+        return;
+    }
+    try {
+        await redis.set(kvKey(owner, repo, versionParam), svg, {
+            ex: POSITIVE_CACHE_TTL_SECONDS,
+        });
+    } catch (err) {
+        console.warn("Failed to write badge cache", err);
+    }
 }
 
-function hitHeaders200FromTag(etag: string) {
-    return {
-        "Content-Type": "image/svg+xml; charset=utf-8",
-        "Cache-Control":
-            "public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000",
-        "X-Content-Type-Options": "nosniff",
-        Vary: "Accept-Encoding",
-        ETag: etag,
-    } as const;
-}
-function hitHeaders304FromTag(etag: string) {
-    return {
-        "Cache-Control":
-            "public, max-age=86400, s-maxage=604800, stale-while-revalidate=2592000",
-        Vary: "Accept-Encoding",
-        ETag: etag,
-    } as const;
-}
-
-// 404 SHOULD NOT be cached, so misses flip to hits immediately later.
-const missHeaders = {
-    "Cache-Control": "no-store, max-age=0, s-maxage=0",
-} as const;
-
-function kvKey(owner: string, repo: string, v?: string | null) {
-    return `badge:${owner.toLowerCase()}:${repo.toLowerCase()}:${v ?? "0"}`;
-}
-
-function matchesIfNoneMatch(req: NextRequest, etag: string) {
-    const inm = req.headers.get("if-none-match");
-    if (!inm) return false;
-    const vals = inm.split(",").map((s) => s.trim());
-    return vals.includes(etag) || vals.includes(`W/${etag}`);
+async function readBucketStatus(
+    owner: string,
+    repo: string
+): Promise<Status | null> {
+    const url = badgeMarkerUrl(owner, repo);
+    if (!url) {
+        return null;
+    }
+    try {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) {
+            return null;
+        }
+        const data = (await response.json()) as { status?: string | null };
+        return normalizeStatus(data?.status ?? undefined);
+    } catch (err) {
+        console.warn("Failed to read badge bucket marker", err);
+        return null;
+    }
 }
 
 export async function GET(request: NextRequest) {
     const repoParam = request.nextUrl.searchParams.get("repo");
-    const versionParam = request.nextUrl.searchParams.get("v"); // optional bust param
+    const versionParam = request.nextUrl.searchParams.get("v");
+    const hasVersionParam = request.nextUrl.searchParams.has("v");
     const repoInfo = parseRepoParam(repoParam);
 
     if (!repoInfo) {
@@ -112,98 +233,31 @@ export async function GET(request: NextRequest) {
         );
     }
 
-    const { owner, repo } = repoInfo;
-    const key = kvKey(owner, repo, versionParam);
-    const kv = await getRedis();
+    const { owner, repo, slug } = normalizeRepo(repoInfo.owner, repoInfo.repo);
+    // Allow a manual cache-bust via ?v=... by skipping the whitelist entirely.
+    const cachedStatus = hasVersionParam ? undefined : WHITELIST.get(slug);
 
-    // 1) Positive cache check (KV)
-    let cached: string | null = null;
-
-    if (kv) {
+    if (cachedStatus) {
         try {
-            cached = await kv.get(key);
+            return await respondWithBadge(cachedStatus, request);
         } catch (err) {
-            console.log(`failed to read cache. Err: ${err}`);
+            console.error("Failed to serve cached badge", err);
         }
     }
 
-    if (cached) {
-        const etag = etagFor(cached);
-        if (matchesIfNoneMatch(request, etag)) {
-            return new NextResponse(null, {
-                status: 304,
-                headers: hitHeaders304FromTag(etag),
-            });
-        }
-        return new NextResponse(cached, {
-            status: 200,
-            headers: hitHeaders200FromTag(etag),
-        });
+    const cachedSvg = await readCache(owner, repo, versionParam);
+    if (cachedSvg) {
+        return respondWithSvg(cachedSvg, request);
     }
 
-    // 2) Slow path: Firestore once; only write positives to KV
-    const firestore = getServerFirestore();
-    if (!firestore) {
-        return NextResponse.json(
-            { error: "Server firestore configuration missing" },
-            { status: 500, headers: missHeaders }
-        );
+    const bucketStatus = await readBucketStatus(owner, repo);
+    if (bucketStatus) {
+        const svg = loadBadge(bucketStatus);
+        await writeCache(owner, repo, versionParam, svg);
+        return respondWithBadge(bucketStatus, request);
     }
 
-    const docId = projectIdFromRepo(owner, repo);
-    const docSnapshot = await firestore.collection("projects").doc(docId).get();
-
-    if (!docSnapshot.exists) {
-        // No negative cache: return 404 with no-store so a later hit turns fast immediately.
-        return NextResponse.json(
-            { error: "Project not found" },
-            { status: 404, headers: missHeaders }
-        );
-    }
-
-    const data = docSnapshot.data();
-    const statusValue = typeof data?.status === "string" ? data.status : null;
-    const status =
-        statusValue === Status.Fast ||
-        statusValue === Status.Average ||
-        statusValue === Status.Pending
-            ? (statusValue as Status)
-            : Status.Pending;
-
-    try {
-        const svg = await loadBadge(status);
-
-        // Write ONLY positive hits to KV
-        if (kv) {
-            try {
-                await kv.set(key, svg, { EX: POS_TTL });
-            } catch (err) {
-                console.log(`failed to write cache. Err: ${err}`);
-            }
-        }
-
-        const etag = etagFor(svg);
-        if (matchesIfNoneMatch(request, etag)) {
-            return new NextResponse(null, {
-                status: 304,
-                headers: hitHeaders304FromTag(etag),
-            });
-        }
-
-        const body = new TextEncoder().encode(svg);
-        return new NextResponse(body, {
-            status: 200,
-            headers: {
-                ...hitHeaders200FromTag(etag),
-                "Content-Length": String(body.byteLength),
-            },
-        });
-    } catch {
-        return NextResponse.json(
-            { error: "Unable to load badge asset" },
-            { status: 500, headers: missHeaders }
-        );
-    }
+    return proxyToFallback(request);
 }
 
 export async function HEAD(request: NextRequest) {

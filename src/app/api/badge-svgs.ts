@@ -1,0 +1,85 @@
+import { Status } from "@/app/domain/projects";
+
+const FAST_BADGE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="103.722656" height="20">
+  <title>blazingly fast</title>
+  <defs>
+    <linearGradient id="workflow-fill" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop stop-color="#505862" offset="0%"></stop>
+      <stop stop-color="#2D3338" offset="100%"></stop>
+    </linearGradient>
+    <linearGradient id="state-fill" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop stop-color="#FF7F7F" offset="0%"></stop>
+      <stop stop-color="#FF5C5C" offset="100%"></stop>
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <g font-family="'DejaVu Sans',Verdana,Geneva,sans-serif" font-size="11">
+      <path id="workflow-bg" d="M0,3 C0,1.3431 1.3552,0 3.02702703,0 L72.8125,0 L72.8125,20 L3.02702703,20 C1.3552,20 0,18.6569 0,17 L0,3 Z" fill="url(#workflow-fill)" fill-rule="nonzero"></path>
+      <text fill="#010101" fill-opacity=".3">
+        <tspan x="18.7411672" y="15" aria-hidden="true">blazingly</tspan>
+      </text>
+      <text fill="#FFFFFF">
+        <tspan x="18.7411672" y="14">blazingly</tspan>
+      </text>
+    </g>
+    <g transform="translate(72.8125)" font-family="'DejaVu Sans',Verdana,Geneva,sans-serif" font-size="11">
+      <path d="M0 0h27.849155C29.539155 0 30.910155 1.343 30.910155 3v14c0 1.657-1.37 3-3.061 3H0V0z" id="state-bg" fill="url(#state-fill)" fill-rule="nonzero"></path>
+      <text fill="#010101" fill-opacity=".3" aria-hidden="true">
+        <tspan x="4.484374" y="15">fast</tspan>
+      </text>
+      <text fill="#FFFFFF">
+        <tspan x="4.484374" y="14">fast</tspan>
+      </text>
+    </g>
+    <path
+      fill="#CBD2DD"
+      d="M11 2c-2.083 2.22-3.5 4.68-3.5 6.98 0 3 2.313 5.02 5.5 5.02s5.5-2.02 5.5-5.02c0-2.14-1.228-4.48-3.2-6.64-.18.94-.54 1.82-1.04 2.59.06-1.33-.29-2.62-1.26-3.93.02.67-.17 1.3-.5 1.97-.33.69-.77 1.42-1 2.29C11.63 4.12 11.32 3.06 11 2z"
+      transform="translate(-3.5 2)"
+    ></path>
+  </g>
+</svg>`;
+
+const SLOW_BADGE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="123.662501" height="20">
+  <title>blazingly average</title>
+  <defs>
+    <linearGradient id="workflow-fill" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop stop-color="#505862" offset="0%"></stop>
+      <stop stop-color="#2D3338" offset="100%"></stop>
+    </linearGradient>
+    <linearGradient id="state-fill" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop stop-color="#C6B5FF" offset="0%"></stop>
+      <stop stop-color="#8F7DEB" offset="100%"></stop>
+    </linearGradient>
+  </defs>
+  <g fill="none" fill-rule="evenodd">
+    <g font-family="'DejaVu Sans',Verdana,Geneva,sans-serif" font-size="11">
+      <path id="workflow-bg" d="M0,3 C0,1.3431 1.3552,0 3.02702703,0 L70.4125,0 L70.4125,20 L3.02702703,20 C1.3552,20 0,18.6569 0,17 L0,3 Z" fill="url(#workflow-fill)" fill-rule="nonzero"></path>
+      <text fill="#010101" fill-opacity=".3">
+        <tspan x="16.3411672" y="15" aria-hidden="true">blazingly</tspan>
+      </text>
+      <text fill="#FFFFFF">
+        <tspan x="16.3411672" y="14">blazingly</tspan>
+      </text>
+    </g>
+    <g transform="translate(70.4125)" font-family="'DejaVu Sans',Verdana,Geneva,sans-serif" font-size="11">
+      <path d="M0 0h49.439C51.129 0 52.5 1.343 52.5 3v14c0 1.657-1.37 3-3.061 3H0V0z" id="state-bg" fill="url(#state-fill)" fill-rule="nonzero"></path>
+      <text fill="#010101" fill-opacity=".3" aria-hidden="true">
+        <tspan x="4" y="15">average</tspan>
+      </text>
+      <text fill="#FFFFFF">
+        <tspan x="4" y="14">average</tspan>
+      </text>
+    </g>
+    <path
+      fill="#CBD2DD"
+      d="M8.5 13.5L4 9l1.4-1.4 3.1 3.1 6-6L15.9 6l-7.4 7.5z"
+      transform="translate(-1.8 .9)"
+    ></path>
+  </g>
+</svg>`;
+
+export const STATUS_TO_SVG: Record<Status, string> = {
+    [Status.Fast]: FAST_BADGE_SVG,
+    [Status.Pending]: SLOW_BADGE_SVG,
+    [Status.Average]: SLOW_BADGE_SVG,
+};
