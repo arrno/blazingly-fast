@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Status } from "@/app/domain/projects";
+import { Status, normalizeRepo } from "@/app/domain/projects";
 import { getRedisInstance } from "@/lib/redis/client";
 import {
+    POSITIVE_CACHE_TTL_SECONDS,
     etagFor,
     hitHeaders200FromTag,
     hitHeaders304FromTag,
@@ -11,6 +12,7 @@ import {
     missHeaders,
     parseRepoParam,
 } from "../badge-utils";
+import { badgeMarkerUrl } from "@/lib/badge-marker";
 
 export const runtime = "edge";
 export const dynamic = "force-dynamic";
@@ -95,7 +97,10 @@ async function buildBadgeAsset(status: Status): Promise<BadgeAsset> {
     };
 }
 
-async function respondWithBadge(status: Status, request: NextRequest) {
+async function respondWithBadge(
+    status: Status,
+    request: NextRequest
+): Promise<NextResponse> {
     const asset = await getBadgeAsset(status);
     if (matchesIfNoneMatch(request, asset.etag)) {
         return new NextResponse(null, {
@@ -112,7 +117,10 @@ async function respondWithBadge(status: Status, request: NextRequest) {
     });
 }
 
-async function respondWithSvg(svg: string, request: NextRequest) {
+async function respondWithSvg(
+    svg: string,
+    request: NextRequest
+): Promise<NextResponse> {
     const etag = await etagFor(svg);
     if (matchesIfNoneMatch(request, etag)) {
         return new NextResponse(null, {
@@ -130,7 +138,7 @@ async function respondWithSvg(svg: string, request: NextRequest) {
     });
 }
 
-async function proxyToFallback(request: NextRequest) {
+async function proxyToFallback(request: NextRequest): Promise<NextResponse> {
     const url = new URL(FALLBACK_PATH, request.nextUrl.origin);
     url.search = request.nextUrl.search;
     const headers = new Headers(request.headers);
@@ -158,7 +166,7 @@ async function readCache(
     owner: string,
     repo: string,
     versionParam: string | null
-) {
+): Promise<string | null> {
     if (!redis) {
         return null;
     }
@@ -169,6 +177,45 @@ async function readCache(
         return typeof cached === "string" ? cached : null;
     } catch (err) {
         console.warn("Failed to read badge cache", err);
+        return null;
+    }
+}
+
+async function writeCache(
+    owner: string,
+    repo: string,
+    versionParam: string | null,
+    svg: string
+): Promise<void> {
+    if (!redis) {
+        return;
+    }
+    try {
+        await redis.set(kvKey(owner, repo, versionParam), svg, {
+            ex: POSITIVE_CACHE_TTL_SECONDS,
+        });
+    } catch (err) {
+        console.warn("Failed to write badge cache", err);
+    }
+}
+
+async function readBucketStatus(
+    owner: string,
+    repo: string
+): Promise<Status | null> {
+    const url = badgeMarkerUrl(owner, repo);
+    if (!url) {
+        return null;
+    }
+    try {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) {
+            return null;
+        }
+        const data = (await response.json()) as { status?: string | null };
+        return normalizeStatus(data?.status ?? undefined);
+    } catch (err) {
+        console.warn("Failed to read badge bucket marker", err);
         return null;
     }
 }
@@ -186,9 +233,7 @@ export async function GET(request: NextRequest) {
         );
     }
 
-    const owner = repoInfo.owner.toLowerCase();
-    const repo = repoInfo.repo.toLowerCase();
-    const slug = `${owner}/${repo}`;
+    const { owner, repo, slug } = normalizeRepo(repoInfo.owner, repoInfo.repo);
     // Allow a manual cache-bust via ?v=... by skipping the whitelist entirely.
     const cachedStatus = hasVersionParam ? undefined : WHITELIST.get(slug);
 
@@ -203,6 +248,13 @@ export async function GET(request: NextRequest) {
     const cachedSvg = await readCache(owner, repo, versionParam);
     if (cachedSvg) {
         return respondWithSvg(cachedSvg, request);
+    }
+
+    const bucketStatus = await readBucketStatus(owner, repo);
+    if (bucketStatus) {
+        const svg = loadBadge(bucketStatus);
+        await writeCache(owner, repo, versionParam, svg);
+        return respondWithBadge(bucketStatus, request);
     }
 
     return proxyToFallback(request);

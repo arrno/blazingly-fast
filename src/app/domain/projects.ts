@@ -40,6 +40,31 @@ export function supplementProject(
     };
 }
 
+export type NormalizedRepo = {
+    owner: string;
+    repo: string;
+    slug: string;
+};
+
 export function projectIdFromRepo(owner: string, repo: string): string {
-    return `${owner}@${repo}`.toLowerCase();
+    const { owner: normalizedOwner, repo: normalizedRepo } = normalizeRepo(owner, repo);
+    return `${normalizedOwner}@${normalizedRepo}`;
+}
+
+function normalizeRepoPart(value: string): string {
+    return value.trim().toLowerCase();
+}
+
+export function normalizeRepo(owner: string, repo: string): NormalizedRepo {
+    const normalizedOwner = normalizeRepoPart(owner);
+    const normalizedRepo = normalizeRepoPart(repo);
+    return {
+        owner: normalizedOwner,
+        repo: normalizedRepo,
+        slug: `${normalizedOwner}/${normalizedRepo}`,
+    };
+}
+
+export function repoSlug(owner: string, repo: string): string {
+    return normalizeRepo(owner, repo).slug;
 }
