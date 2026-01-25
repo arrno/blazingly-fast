@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRedis } from "@/lib/redis/client";
 import { getServerFirestore } from "@/lib/firebase/server";
+import { writeBadgeMarker } from "@/lib/gcp/bucket";
 import { Status, projectIdFromRepo } from "@/app/domain/projects";
 import {
     POSITIVE_CACHE_TTL_SECONDS,
@@ -73,6 +74,11 @@ export async function GET(request: NextRequest) {
                 console.log(`failed to write cache. Err: ${err}`);
             }
         }
+
+        // Repair bucket marker if missing/outdated
+        writeBadgeMarker(owner, repo, status).catch((err) => {
+            console.log(`failed to repair badge marker. Err: ${err}`);
+        });
 
         const etag = await etagFor(svg);
         if (matchesIfNoneMatch(request, etag)) {
