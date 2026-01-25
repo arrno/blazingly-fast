@@ -66,19 +66,17 @@ export async function GET(request: NextRequest) {
     try {
         const svg = loadBadge(status);
 
-        // Write ONLY positive hits to KV
-        if (kv) {
-            try {
-                await kv.set(key, svg, { ex: POSITIVE_CACHE_TTL_SECONDS });
-            } catch (err) {
-                console.log(`failed to write cache. Err: ${err}`);
-            }
-        }
+        const kvWritePromise = kv
+            ? kv.set(key, svg, { ex: POSITIVE_CACHE_TTL_SECONDS }).catch((err) => {
+                  console.log(`failed to write cache. Err: ${err}`);
+              })
+            : Promise.resolve();
 
-        // Repair bucket marker if missing/outdated
-        writeBadgeMarker(owner, repo, status).catch((err) => {
+        const markerPromise = writeBadgeMarker(owner, repo, status).catch((err) => {
             console.log(`failed to repair badge marker. Err: ${err}`);
         });
+
+        await Promise.all([kvWritePromise, markerPromise]);
 
         const etag = await etagFor(svg);
         if (matchesIfNoneMatch(request, etag)) {
