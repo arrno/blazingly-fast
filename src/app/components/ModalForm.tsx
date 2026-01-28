@@ -185,16 +185,16 @@ export function ModalForm() {
     } font-semibold tracking-tight text-zinc-900`;
     const formSpacingClass = isCompact ? "space-y-5" : "space-y-6";
     const fieldsetPaddingClass = isCompact
-        ? "space-y-2 rounded-2xl border border-gray-200 bg-white p-3"
-        : "space-y-3 rounded-2xl border border-gray-200 bg-white p-4";
+        ? "space-y-2 rounded-lg border border-gray-200 bg-white p-3"
+        : "space-y-3 rounded-lg border border-gray-200 bg-white p-4";
     const labelTextClass =
         "flex flex-col gap-2 text-sm font-medium text-zinc-700";
     const inputBaseClass =
-        "w-full rounded-2xl border border-zinc-200 bg-white px-4 py-2.5 text-base text-zinc-900 placeholder:text-zinc-400 transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/30 sm:text-sm";
+        "w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-base text-zinc-900 placeholder:text-zinc-400 transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/30 sm:text-sm";
     const textareaClass = `${inputBaseClass} ${
         isCompact ? "min-h-[72px]" : "min-h-[96px]"
     }`;
-    const submitButtonClass = `w-full rounded-2xl bg-black ${
+    const submitButtonClass = `w-full rounded-lg bg-black ${
         isCompact ? "py-3" : "py-3.5"
     } text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70`;
     const copyButtonClass = `inline-flex items-center gap-1 rounded-md bg-transparent px-2 py-1 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff6b6b]/30 ${
@@ -334,7 +334,7 @@ export function ModalForm() {
                 </form>
 
                 {badgeSnippet && (
-                    <div className="space-y-4 rounded-3xl border border-gray-200 bg-gray-50 p-5">
+                    <div className="space-y-4 rounded-xl border border-gray-200 bg-gray-50 p-5">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div className="space-y-1">
                                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
@@ -355,7 +355,7 @@ export function ModalForm() {
                             </button>
                         </div>
                         <div className="relative">
-                            <pre className="overflow-x-auto rounded-2xl bg-gray-900 p-4 text-[13px] leading-relaxed text-gray-100">
+                            <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4 text-[13px] leading-relaxed text-gray-100">
                                 <code className="block whitespace-pre-wrap break-words font-mono">
                                     {badgeSnippet}
                                 </code>

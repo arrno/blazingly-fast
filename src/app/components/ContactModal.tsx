@@ -145,11 +145,11 @@ export function ContactModal() {
     } font-semibold tracking-tight text-zinc-900`;
     const formSpacingClass = isCompact ? "space-y-5" : "space-y-6";
     const inputBaseClass =
-        "w-full rounded-2xl border border-zinc-200 bg-white px-4 py-2.5 text-base text-zinc-900 placeholder:text-zinc-400 transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/30 sm:text-sm";
+        "w-full rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-base text-zinc-900 placeholder:text-zinc-400 transition focus:border-[#ff6b6b] focus:outline-none focus:ring-2 focus:ring-[#ff6b6b]/30 sm:text-sm";
     const textareaClass = `${inputBaseClass} ${
         isCompact ? "min-h-[120px]" : "min-h-[160px]"
     }`;
-    const submitButtonClass = `w-full rounded-2xl bg-black ${
+    const submitButtonClass = `w-full rounded-lg bg-black ${
         isCompact ? "py-3" : "py-3.5"
     } text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-70`;
 
@@ -168,8 +168,8 @@ export function ContactModal() {
                             </p>
                         ) : (
                             <p className="text-sm text-zinc-500">
-                                Questions, feedback, or spicy benchmark stories —
-                                send them our way.
+                                Questions, feedback, or spicy benchmark stories
+                                — send them our way.
                             </p>
                         )}
                     </div>

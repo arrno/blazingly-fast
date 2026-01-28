@@ -25,7 +25,9 @@ export function CertificationFormCard({
             <div className="absolute -bottom-10 -right-6 hidden h-28 w-28 rounded-full bg-gradient-to-tr from-blue-200 via-transparent to-transparent blur-3xl lg:block" />
             <div className="relative space-y-6">
                 <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-gray-500">
-                    <span>Certification form</span>
+                    <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                        Certification form
+                    </span>
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-600">
                         Live preview
                     </span>

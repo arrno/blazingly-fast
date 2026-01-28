@@ -125,13 +125,13 @@ export function TerminalHero({ variant = "purple" }: TerminalHeroProps) {
                                 <span className="text-zinc-600">]</span>
                             </Link>
                             <div className="ml-auto hidden text-zinc-500 sm:block">
-                                <code>npm install -g bfast</code>
+                                <code>npm i -g @blazingly/declare</code>
                             </div>
                         </div>
 
                         {/* Mobile install hint */}
                         <div className="text-center text-sm text-zinc-600 sm:hidden">
-                            <code>npm install -g bfast</code>
+                            <code>npm i -g @blazingly/declare</code>
                         </div>
                     </div>
                 </div>

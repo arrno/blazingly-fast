@@ -64,7 +64,7 @@ export function CliAnimation({ variant = "purple" }: CliAnimationProps) {
     const colors = colorConfig[variant];
     const [typedText, setTypedText] = useState("");
     const [phase, setPhase] = useState<AnimationPhase>("typing");
-    const fullCommand = 'bfast -m "boosted vibes"';
+    const fullCommand = 'declare "vibes boosted"';
 
     useEffect(() => {
         if (phase !== "typing") return;
