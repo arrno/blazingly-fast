@@ -1,7 +1,8 @@
 import { CertificationSection } from "./components/CertificationSection";
 import { ContactModal } from "./components/ContactModal";
 import { Footer } from "./components/Footer";
-import { Hero } from "./components/Hero";
+import { HowSection } from "./components/HowSection";
+import { TerminalHero } from "./components/TerminalHero";
 // import { LiveSubmissionCounter } from "./components/LiveSubmissionCounter";
 import { ModalForm } from "./components/ModalForm";
 import { Navbar } from "./components/Navbar";
@@ -13,7 +14,8 @@ export default function Home() {
             <Navbar />
             {/* <LiveSubmissionCounter /> */}
             <main className="flex-1">
-                <Hero />
+                <TerminalHero variant="lightPurple" />
+                <HowSection />
                 <CertificationSection />
                 <WhyProjectsSection />
             </main>

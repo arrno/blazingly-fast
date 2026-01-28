@@ -21,19 +21,39 @@ const steps = [
 
 interface HowCardsProps {
     ariaLabelledBy?: string;
+    layout?: "horizontal" | "vertical";
 }
 
-export function HowCards({ ariaLabelledBy }: HowCardsProps) {
+export function HowCards({
+    ariaLabelledBy,
+    layout = "horizontal",
+}: HowCardsProps) {
+    const isVertical = layout === "vertical";
+
     return (
         <div
-            className="w-full rounded-md border border-gray-200 bg-white/85 p-6 shadow-lg shadow-gray-900/5 backdrop-blur"
+            className={`w-full rounded-md border border-gray-200 ${
+                isVertical ? "bg-white" : "bg-white/85"
+            } p-6 shadow-lg shadow-gray-900/5 ${
+                isVertical ? "" : "backdrop-blur"
+            }`}
             aria-labelledby={ariaLabelledBy}
         >
-            <div className="flex flex-col gap-8 sm:flex-row sm:gap-0">
+            <div
+                className={
+                    isVertical
+                        ? "flex flex-col gap-8"
+                        : "flex flex-col gap-8 sm:flex-row sm:gap-0"
+                }
+            >
                 {steps.map((step, index) => (
                     <div
                         key={step.title}
-                        className="relative flex-1 text-left sm:px-8 first:sm:pl-0 last:sm:pr-0"
+                        className={`relative flex-1 text-left ${
+                            isVertical
+                                ? ""
+                                : "sm:px-8 first:sm:pl-0 last:sm:pr-0"
+                        }`}
                     >
                         <span className="inline-flex items-center gap-2 rounded-md bg-zinc-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-gray-800">
                             <svg
@@ -61,7 +81,7 @@ export function HowCards({ ariaLabelledBy }: HowCardsProps) {
                             {step.description}
                         </p>
 
-                        {index < steps.length - 1 ? (
+                        {index < steps.length - 1 && !isVertical ? (
                             <>
                                 <span
                                     aria-hidden
@@ -73,6 +93,12 @@ export function HowCards({ ariaLabelledBy }: HowCardsProps) {
                                 />
                             </>
                         ) : null}
+                        {index < steps.length - 1 && isVertical && (
+                            <span
+                                aria-hidden
+                                className="block mx-auto mt-6 h-px w-11/12 bg-gray-200/80 shadow-[0_0_10px_rgba(0,0,0,0.08)]"
+                            />
+                        )}
                     </div>
                 ))}
             </div>
